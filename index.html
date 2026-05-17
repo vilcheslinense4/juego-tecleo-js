@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ CyberType | Speed Run Pro</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: #060913;
+            background-image: 
+                radial-gradient(at 50% 0%, rgba(0, 255, 170, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 210, 255, 0.08) 0px, transparent 50%);
+            color: #f4f7f6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(11, 19, 36, 0.85);
+            width: 100%;
+            max-width: 750px;
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid rgba(0, 255, 170, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+            display: grid;
+            grid-template-columns: 1fr 240px;
+            gap: 25px;
+            position: relative;
+        }
+
+        @media (max-width: 650px) {
+            .game-container { grid-template-columns: 1fr; }
+        }
+
+        /* Bloque del Sistema de Autenticación Avanzado */
+        .auth-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0b1324;
+            border-radius: 24px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            transition: all 0.4s ease;
+        }
+        .auth-overlay.hidden { opacity: 0; pointer-events: none; transform: scale(0.95); }
+
+        .auth-overlay h2 { font-size: 2rem; color: #00ffaa; text-shadow: 0 0 15px rgba(0,255,170,0.3); margin-bottom: 5px; }
+        .auth-overlay p { opacity: 0.7; margin-bottom: 20px; text-align: center; font-size: 0.9rem; }
+        
+        .auth-form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 12px; }
+        .auth-form input {
+            width: 100%; background: #060913; border: 1px solid rgba(0,255,170,0.3);
+            padding: 10px 14px; border-radius: 10px; color: white; outline: none; font-size: 0.95rem;
+        }
+        .auth-form input:focus { border-color: #00ffaa; box-shadow: 0 0 10px rgba(0,255,170,0.2); }
+        
+        .auth-toggle-text { margin-top: 15px; font-size: 0.85rem; opacity: 0.6; cursor: pointer; transition: color 0.2s; }
+        .auth-toggle-text span { color: #00d2ff; font-weight: bold; text-decoration: underline; }
+        .auth-toggle-text span:hover { color: #00ffaa; }
+
+        .btn-green {
+            background: #00ffaa; color: #060913; border: none; padding: 12px 24px;
+            border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .btn-green:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,255,170,0.4); }
+
+        /* Área de Juego Principal */
+        .main-game { display: flex; flex-direction: column; justify-content: space-between; }
+        
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
+        .logo { font-weight: 800; font-size: 1.3rem; color: #00ffaa; text-shadow: 0 0 10px rgba(0,255,170,0.3); }
+        
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .btn-volver { color: rgba(255, 255, 255, 0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+        .btn-volver:hover { color: #00ffaa; }
+        .user-tag { font-size: 0.85rem; opacity: 0.6; background: rgba(255,255,255,0.05); padding: 4px 12px; border-radius: 20px; cursor: pointer; }
+        .user-tag:hover { color: #ff0055; background: rgba(255,0,85,0.1); }
+
+        /* Cuadros de Estadísticas */
+        .stats-row { display: flex; gap: 15px; margin-bottom: 20px; }
+        .stat-box {
+            flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);
+            padding: 12px; border-radius: 14px; text-align: center;
+        }
+        .stat-box span { display: block; font-size: 0.75rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 4px; }
+        .stat-box p { font-size: 1.5rem; font-weight: 800; color: #00d2ff; }
+        .stat-box p.highlight { color: #00ffaa; text-shadow: 0 0 10px rgba(0,255,170,0.3); }
+
+        /* El texto del reto */
+        .text-challenge {
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(0,210,255,0.1);
+            border-radius: 16px; padding: 20px; font-size: 1.25rem; line-height: 1.6;
+            letter-spacing: 0.5px; margin-bottom: 20px; text-align: left;
+            user-select: none; -webkit-user-select: none; min-height: 110px;
+        }
+        .char-correct { color: #00ffaa; text-shadow: 0 0 8px rgba(0,255,170,0.4); background: rgba(0,255,170,0.1); border-radius: 2px; }
+        .char-incorrect { color: #ff0055; text-shadow: 0 0 8px rgba(255,0,85,0.4); background: rgba(255,0,85,0.15); border-radius: 2px; }
+        .char-current { border-bottom: 3px solid #00d2ff; animation: blink 0.8s infinite; }
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        /* Cuadro de escritura */
+        .input-area { width: 100%; position: relative; }
+        .input-area textarea {
+            width: 100%; height: 50px; background: #060913; border: 2px solid rgba(0,210,255,0.2);
+            border-radius: 14px; padding: 12px 16px; color: white; font-size: 1.1rem;
+            outline: none; resize: none; transition: border-color 0.3s;
+        }
+        .input-area textarea:focus { border-color: #00d2ff; box-shadow: 0 0 15px rgba(0,210,255,0.15); }
+        .input-area textarea:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Barra Lateral: Tabla de Clasificación */
+        .leaderboard-side {
+            background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 18px; padding: 15px; display: flex; flex-direction: column;
+        }
+        .leaderboard-side h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: #00d2ff; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
+        .leader-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px; background: rgba(255,255,255,0.02); border-radius: 8px; font-size: 0.85rem;
+        }
+        .leader-item.top-rank { border-left: 3px solid #00ffaa; background: rgba(0,255,170,0.03); }
+        .leader-item.user-rank { border-left: 3px solid #00d2ff; background: rgba(0,210,255,0.05); font-weight: bold; }
+        .leader-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+        .leader-score { font-family: monospace; font-weight: bold; color: #00d2ff; }
+
+        /* Modal / Alerta de Fin de partida */
+        .results-modal {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 9, 19, 0.95); border-radius: 24px; z-index: 5;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 30px; opacity: 0; pointer-events: none; transition: all 0.4s ease;
+        }
+        .results-modal.active { opacity: 1; pointer-events: auto; }
+        .results-modal h2 { color: #ff0055; font-size: 2.2rem; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255,0,85,0.3); }
+        .results-grid { display: flex; gap: 20px; margin: 20px 0; width: 100%; max-width: 400px; }
+        
+        .error-msg { font-size: 0.8rem; color: #ff0055; text-align: center; font-weight: bold; display: none; margin-top: -5px; line-height: 1.3; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        
+        <div id="auth-box" class="auth-overlay">
+            <h2 id="auth-title">⚡ INICIAR SESIÓN</h2>
+            <p id="auth-desc">Accede para registrar tus marcas en la clasificación global del sistema.</p>
+            
+            <div class="auth-form">
+                <input type="email" id="auth-email" placeholder="Correo electrónico..." style="display: none;">
+                <input type="text" id="auth-username" placeholder="Nombre de usuario o alias...">
+                <input type="password" id="auth-password" placeholder="Contraseña de acceso...">
+                <div id="auth-error" class="error-msg">Error en las credenciales introducidas.</div>
+                <button id="btn-auth-submit" class="btn-green">Entrar seguro</button>
+            </div>
+
+            <div id="auth-toggle" class="auth-toggle-text">¿No tienes cuenta todavía? <span>Regístrate aquí</span></div>
+        </div>
+
+        <div id="results-box" class="results-modal">
+            <h2>¡TIEMPO AGOTADO!</h2>
+            <p style="opacity: 0.6;">Resumen de rendimiento de tu sesión:</p>
+            <div class="results-grid">
+                <div class="stat-box"><span>Velocidad</span><p id="res-ppm">0 PPM</p></div>
+                <div class="stat-box"><span>Precisión</span><p id="res-prec">0%</p></div>
+            </div>
+            <p id="record-alert" style="margin-bottom: 20px; color: #00ffaa; font-weight: bold; display: none;">¡NUEVO RÉCORD PERSONAL! 🏆</p>
+            <button id="btn-restart" class="btn-green">Jugar de Nuevo</button>
+        </div>
+
+        <div class="main-game">
+            <header>
+                <span class="logo">⚡ CYBERTYPE</span>
+                <div class="header-actions">
+                    <a href="https://vilcheslinense4.github.io/Mi-primer-portafolios/index.html" class="btn-volver">← Volver</a>
+                    <span id="user-display" class="user-tag" title="Hacer clic para cerrar sesión">Cerrar Sesión</span>
+                </div>
+            </header>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span>Tiempo</span>
+                    <p id="timer-display" class="highlight">30s</p>
+                </div>
+                <div class="stat-box">
+                    <span>Velocidad Actual</span>
+                    <p id="ppm-display">0 PPM</p>
+                </div>
+                <div class="stat-box">
+                    <span>Precisión</span>
+                    <p id="precision-display">100%</p>
+                </div>
+            </div>
+
+            <div id="text-target" class="text-challenge">Cargando desafío de tecleo...</div>
+
+            <div class="input-area">
+                <textarea id="type-input" placeholder="Escribe aquí el texto de arriba para activar el cronómetro..." disabled></textarea>
+            </div>
+        </div>
+
+        <div class="leaderboard-side">
+            <h3>Clasificación 🏆</h3>
+            <div id="leaderboard-entries" class="leaderboard-list"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const bancoFrases = [
+            "javascript es el lenguaje que da vida y potencia a las aplicaciones web modernas.",
+            "un buen desarrollador junior practica codigo todos los dias para subir de nivel.",
+            "el almacenamiento local guarda datos directamente en el navegador del usuario.",
+            "crear interfaces interactivas y fluidas mejora la experiencia de los clientes.",
+            "las bases de datos centralizadas guardan informacion global en servidores en la nube.",
+            "diseñar paginas web adaptables garantiza que luzcan increibles en telefonos moviles.",
+            "aprender logs de consola ayuda a solucionar errores de codigo de forma eficiente."
+        ];
+
+        function playTone(freq, duration, type="sine") {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.04, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch(e){}
+        }
+
+        // Elementos DOM Autenticación
+        const authBox = document.getElementById('auth-box');
+        const authTitle = document.getElementById('auth-title');
+        const authDesc = document.getElementById('auth-desc');
+        const authEmail = document.getElementById('auth-email');
+        const authUsername = document.getElementById('auth-username');
+        const authPassword = document.getElementById('auth-password');
+        const authError = document.getElementById('auth-error');
+        const btnAuthSubmit = document.getElementById('btn-auth-submit');
+        const authToggle = document.getElementById('auth-toggle');
+
+        // Elementos DOM Juego
+        const userDisplay = document.getElementById('user-display');
+        const textTarget = document.getElementById('text-target');
+        const typeInput = document.getElementById('type-input');
+        const timerDisplay = document.getElementById('timer-display');
+        const ppmDisplay = document.getElementById('ppm-display');
+        const precisionDisplay = document.getElementById('precision-display');
+        
+        const resultsBox = document.getElementById('results-box');
+        const resPpm = document.getElementById('res-ppm');
+        const resPrec = document.getElementById('res-prec');
+        const recordAlert = document.getElementById('record-alert');
+        const btnRestart = document.getElementById('btn-restart');
+        const leaderboardEntries = document.getElementById('leaderboard-entries');
+
+        // Variables de Control
+        let isLoginMode = true; 
+        let currentUser = "";
+        let tiempoRestante = 30;
+        let timerInterval = null;
+        let juegoIniciado = false;
+        let fraseActual = "";
+        let erroresTotales = 0;
+        let pulsacionesTotales = 0;
+
+        function getDBUsuarios() {
+            return JSON.parse(localStorage.getItem('cybertype_db_users')) || {};
+        }
+
+        function saveDBUsuarios(db) {
+            localStorage.setItem('cybertype_db_users', JSON.stringify(db));
+        }
+
+        authToggle.addEventListener('click', () => {
+            playTone(500, 0.05);
+            authError.style.display = "none";
+            if (isLoginMode) {
+                authTitle.innerText = "⚡ REGISTRAR CUENTA";
+                authDesc.innerText = "Completa tus datos para crear una identidad de corredor digital única.";
+                authEmail.style.display = "block";
+                btnAuthSubmit.innerText = "Crear Cuenta Pro";
+                authToggle.innerHTML = "¿Ya tienes cuenta registrada? <span>Inicia sesión aquí</span>";
+                isLoginMode = false;
+            } else {
+                authTitle.innerText = "⚡ INICIAR SESIÓN";
+                authDesc.innerText = "Accede para registrar tus marcas en la clasificación global del sistema.";
+                authEmail.style.display = "none";
+                btnAuthSubmit.innerText = "Entrar seguro";
+                authToggle.innerHTML = "¿No tienes cuenta todavía? <span>Regístrate aquí</span>";
+                isLoginMode = true;
+            }
+        });
+
+        btnAuthSubmit.addEventListener('click', () => {
+            const username = authUsername.value.trim();
+            const password = authPassword.value;
+            const email = authEmail.value.trim();
+            const db = getDBUsuarios();
+
+            authError.style.display = "none";
+
+            if (isLoginMode) {
+                if (db[username] && db[username].password === password) {
+                    executeLogin(username);
+                } else {
+                    triggerAuthError("Credenciales incorrectas o usuario inexistente.");
+                }
+            } else {
+                if (email.length < 5 || !email.includes("@")) {
+                    triggerAuthError("Escribe un correo electrónico válido.");
+                    return;
+                }
+                if (username.length < 2) {
+                    triggerAuthError("El nombre de usuario debe tener mínimo 2 letras.");
+                    return;
+                }
+                if (db[username]) {
+                    triggerAuthError("Este nombre de usuario ya está registrado.");
+                    return;
+                }
+                
+                // REQUISITOS ESTRICTOS: Mínimo 9 caracteres, 1 mayúscula, 1 minúscula y 1 número
+                const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,}$/;
+                if (!regexPassword.test(password)) {
+                    triggerAuthError("Contraseña inválida. Debe tener mínimo 9 caracteres, 1 mayúscula, 1 minúscula y 1 número.");
+                    return;
+                }
+
+                db[username] = { email: email, password: password, record: 0 };
+                saveDBUsuarios(db);
+
+                executeLogin(username);
+            }
+        });
+
+        function triggerAuthError(texto) {
+            playTone(250, 0.2, "sawtooth");
+            authError.innerText = texto;
+            authError.style.display = "block";
+        }
+
+        function executeLogin(username) {
+            currentUser = username;
+            localStorage.setItem('cybertype_session_active', currentUser);
+            userDisplay.innerText = `👤 ${currentUser} (Salir)`;
+            authBox.classList.add('hidden');
+            
+            playTone(600, 0.08, "square");
+            setTimeout(() => playTone(800, 0.1, "square"), 60);
+
+            authUsername.value = "";
+            authPassword.value = "";
+            authEmail.value = "";
+
+            initPartida();
+        }
+
+        userDisplay.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            localStorage.removeItem('cybertype_session_active');
+            currentUser = "";
+            userDisplay.innerText = "Cerrar Sesión";
+            authBox.classList.remove('hidden');
+            typeInput.disabled = true;
+            resultsBox.classList.remove('active');
+            playTone(350, 0.15, "sawtooth");
+        });
+
+        function actualizarLeaderboard() {
+            const db = getDBUsuarios();
+            let userRecord = 0;
+            if (currentUser && db[currentUser]) {
+                userRecord = db[currentUser].record || 0;
+            }
+
+            let listaRanks = [
+                { nombre: "💻 Neo_JS", ppm: 92 },
+                { nombre: "⚡ Cyber_Typist", ppm: 74 },
+                { nombre: "🤖 Bot_Junior", ppm: 45 }
+            ];
+
+            if (currentUser) {
+                listaRanks.push({ nombre: `👤 ${currentUser}`, ppm: userRecord });
+            }
+
+            listaRanks.sort((a, b) => b.ppm - a.ppm);
+
+            leaderboardEntries.innerHTML = "";
+            listaRanks.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = `leader-item ${index === 0 ? 'top-rank' : ''} ${item.nombre.includes(currentUser) ? 'user-rank' : ''}`;
+                row.innerHTML = `
+                    <span class="leader-name">${index + 1}. ${item.nombre}</span>
+                    <span class="leader-score">${item.ppm} PPM</span>
+                `;
+                leaderboardEntries.appendChild(row);
+            });
+        }
+
+        function initPartida() {
+            clearInterval(timerInterval);
+            juegoIniciado = false;
+            tiempoRestante = 30;
+            erroresTotales = 0;
+            pulsacionesTotales = 0;
+            
+            timerDisplay.innerText = "30s";
+            ppmDisplay.innerText = "0 PPM";
+            precisionDisplay.innerText = "100%";
+            typeInput.value = "";
+            typeInput.disabled = false;
+            resultsBox.classList.remove('active');
+            recordAlert.style.display = "none";
+
+            fraseActual = bancoFrases[Math.floor(Math.random() * bancoFrases.length)];
+            
+            textTarget.innerHTML = "";
+            fraseActual.split("").forEach((char, index) => {
+                const span = document.createElement('span');
+                span.innerText = char;
+                if (index === 0) span.className = "char-current";
+                textTarget.appendChild(span);
+            });
+
+            actualizarLeaderboard();
+            typeInput.focus();
+        }
+
+        typeInput.addEventListener('input', (e) => {
+            if (!juegoIniciado) {
+                juegoIniciado = true;
+                startCronometro();
+            }
+
+            const textoEscrito = typeInput.value;
+            const spans = textTarget.querySelectorAll('span');
+            pulsacionesTotales++;
+
+            erroresTotales = 0;
+            let caracteresCorrectos = 0;
+
+            spans.forEach((span, index) => {
+                const charEscrito = textoEscrito[index];
+
+                if (charEscrito == null) {
+                    span.className = (index === textoEscrito.length) ? "char-current" : "";
+                } else if (charEscrito === span.innerText) {
+                    span.className = "char-correct";
+                    caracteresCorrectos++;
+                } else {
+                    span.className = "char-incorrect";
+                    erroresTotales++;
+                }
+            });
+
+            if (textoEscrito.length > 0) {
+                if (textoEscrito[textoEscrito.length - 1] === fraseActual[textoEscrito.length - 1]) {
+                    playTone(800, 0.03); 
+                } else {
+                    playTone(300, 0.06, "triangle"); 
+                }
+            }
+
+            let minutosTranscurridos = (30 - tiempoRestante) / 60;
+            if (minutosTranscurridos > 0) {
+                let ppm = Math.round((caracteresCorrectos / 5) / minutesTranscurridos);
+                ppmDisplay.innerText = `${ppm} PPM`;
+            }
+
+            let precision = Math.round(((pulsacionesTotales - erroresTotales) / pulsacionesTotales) * 100);
+            precisionDisplay.innerText = `${isNaN(precision) ? 100 : Math.max(0, precision)}%`;
+
+            if (textoEscrito === fraseActual) {
+                finalizarJuego();
+            }
+        });
+
+        function startCronometro() {
+            timerInterval = setInterval(() => {
+                tiempoRestante--;
+                timerDisplay.innerText = `${tiempoRestante}s`;
+
+                if (tiempoRestante <= 5 && tiempoRestante > 0) {
+                    playTone(1000, 0.05, "square");
+                }
+
+                const textoEscrito = typeInput.value;
+                let caracteresCorrectos = 0;
+                for(let i=0; i<textoEscrito.length; i++) {
+                    if (textoEscrito[i] === fraseActual[i]) caracteresCorrectos++;
+                }
+                let minutosTranscurridos = (30 - tiempoRestante) / 60;
+                let ppm = Math.round((caracteresCorrectos / 5) / minutosTranscurridos);
+                ppmDisplay.innerText = `${isNaN(ppm) ? 0 : ppm} PPM`;
+
+                if (tiempoRestante <= 0) {
+                    finalizarJuego();
+                }
+            }, 1000);
+        }
+
+        function finalizarJuego() {
+            clearInterval(timerInterval);
+            typeInput.disabled = true;
+
+            const textoEscrito = typeInput.value;
+            let caracteresCorrectos = 0;
+            for(let i=0; i<textoEscrito.length; i++) {
+                if (textoEscrito[i] === fraseActual[i]) caracteresCorrectos++;
+            }
+            
+            let minutosEfectivos = (30 - tiempoRestante) / 60;
+            if (minutosEfectivos === 0) minutosEfectivos = 30 / 60; 
+            
+            let ppmFinal = Math.round((caracteresCorrectos / 5) / minutosEfectivos);
+            let precisionFinal = Math.round(((pulsacionesTotales - erroresTotales) / pulsacionesTotales) * 100);
+            if (isNaN(precisionFinal)) precisionFinal = 100;
+
+            resPpm.innerText = `${ppmFinal} PPM`;
+            resPrec.innerText = `${Math.max(0, precisionFinal)}%`;
+
+            const db = getDBUsuarios();
+            let recordAnterior = db[currentUser].record || 0;
+            
+            if (ppmFinal > recordAnterior) {
+                db[currentUser].record = ppmFinal;
+                saveDBUsuarios(db);
+                
+                recordAlert.style.display = "block";
+                playTone(700, 0.1);
+                setTimeout(() => playTone(900, 0.1), 100);
+                setTimeout(() => playTone(1200, 0.2), 200);
+            } else {
+                playTone(400, 0.3, "sawtooth");
+            }
+
+            actualizarLeaderboard();
+            resultsBox.classList.add('active');
+        }
+
+        btnRestart.addEventListener('click', () => {
+            playTone(600, 0.08);
+            initPartida();
+        });
+
+        window.addEventListener('load', () => {
+            const activeSession = localStorage.getItem('cybertype_session_active');
+            if (activeSession) {
+                executeLogin(activeSession);
+            } else {
+                actualizarLeaderboard();
+            }
+        });
+    </script>
+</body>
+</html>
