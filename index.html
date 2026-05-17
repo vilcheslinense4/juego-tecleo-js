@@ -36,11 +36,7 @@
             position: relative;
         }
 
-        @media (max-width: 800px) {
-            .game-container { grid-template-columns: 1fr; padding: 25px; }
-        }
-
-        /* BOTÓN VOLVER ATRÁS (FIJO ARRIBA A LA IZQUIERDA EN TODAS LAS PANTALLAS) */
+        /* BOTÓN VOLVER ATRÁS (ESTILO ESCRITORIO) */
         .btn-volver-global {
             position: absolute;
             top: -45px;
@@ -56,6 +52,27 @@
             z-index: 100;
         }
         .btn-volver-global:hover { text-shadow: 0 0 10px #00ffaa; transform: translateX(-3px); }
+
+        /* AJUSTES RESPONSIVOS PARA MÓVIL */
+        @media (max-width: 800px) {
+            body {
+                padding-top: 60px; /* Deja espacio arriba en móviles para que no se pegue al borde */
+            }
+            .game-container { 
+                grid-template-columns: 1fr; 
+                padding: 25px; 
+            }
+            .btn-volver-global {
+                position: fixed; /* Se queda fijo arriba a la izquierda de la pantalla */
+                top: 15px;
+                left: 15px;
+                font-size: 0.85rem; /* Un pelín más compacto para pantallas pequeñas */
+                background: rgba(11, 19, 36, 0.9); /* Fondo sólido sutil para que no se mezcle con el fondo */
+                padding: 6px 12px;
+                border-radius: 8px;
+                border: 1px solid rgba(0, 255, 170, 0.2);
+            }
+        }
 
         /* Capa de Autenticación */
         .auth-overlay {
@@ -108,7 +125,6 @@
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; width: 100%; }
         .logo { font-weight: 800; font-size: 1.5rem; color: #00ffaa; text-shadow: 0 0 10px rgba(0,255,170,0.3); }
         
-        /* REDUCIDO DE TAMAÑO Y AJUSTADO EL USUARIO DE ARRIBA A LA DERECHA */
         .user-tag { 
             font-size: 0.75rem; 
             opacity: 0.8; 
@@ -347,7 +363,6 @@
             playTone(500, 0.05);
         });
 
-        // REPARADO TEXTO DE RECUPERACIÓN CORPORATIVO Y PROFESIONAL
         authForgot.addEventListener('click', () => {
             authError.style.display = "none"; simulatedMailbox.style.display = "none"; clearInputs(); resetPasswordVisibility();
             mode = "recovery_1"; authTitle.innerText = "🔑 RESTABLECER CONTRASEÑA";
