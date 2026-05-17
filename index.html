@@ -40,7 +40,7 @@
             .game-container { grid-template-columns: 1fr; padding: 25px; }
         }
 
-        /* BOTÓN VOLVER ATRÁS (FIJO ARRIBA A LA IZQUIERDA) */
+        /* BOTÓN VOLVER ATRÁS (FIJO ARRIBA A LA IZQUIERDA EN TODAS LAS PANTALLAS) */
         .btn-volver-global {
             position: absolute;
             top: -45px;
@@ -105,10 +105,21 @@
         .email-body { font-size: 0.85rem; color: #ffffff; background: #060913; padding: 10px; border-radius: 6px; border-left: 3px solid #00ffaa; }
 
         /* Estilos del Juego */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; width: 100%; }
         .logo { font-weight: 800; font-size: 1.5rem; color: #00ffaa; text-shadow: 0 0 10px rgba(0,255,170,0.3); }
-        .user-tag { font-size: 0.85rem; opacity: 0.6; background: rgba(255,255,255,0.05); padding: 6px 15px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
-        .user-tag:hover { color: #ff0055; background: rgba(255,0,85,0.1); }
+        
+        /* REDUCIDO DE TAMAÑO Y AJUSTADO EL USUARIO DE ARRIBA A LA DERECHA */
+        .user-tag { 
+            font-size: 0.75rem; 
+            opacity: 0.8; 
+            background: rgba(255,255,255,0.05); 
+            padding: 4px 10px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .user-tag:hover { color: #ff0055; background: rgba(255,0,85,0.1); border-color: rgba(255,0,85,0.2); }
 
         .time-selector { display: flex; gap: 12px; justify-content: flex-start; margin-bottom: 20px; }
         .time-btn {
@@ -245,7 +256,6 @@
     </div>
 
     <script>
-        // BANCO DE PALABRAS ACTUALIZADO CON TILDES SEGÚN LA RAE
         const bancoPalabras = ["javascript", "código", "frontend", "backend", "servidor", "desarrollo", "web", "interfaz", "diseño", "variable", "función", "objeto", "arreglo", "clase", "promesa", "asíncrono", "estilo", "navegador", "consola", "error", "repositorio", "proyecto", "portafolio", "teclado", "velocidad", "precisión", "datos", "almacenamiento", "local", "nube", "conexión", "red", "digital", "futuro", "tecnología", "innovación", "lógica", "algoritmo", "estructura", "tiempo", "segundo", "minuto", "reloj", "récord", "clasificación", "aprendizaje", "práctica", "software", "pantalla", "informática", "computación", "píxel", "gráficos", "autenticación", "verificación"];
 
         function playTone(freq, duration, type="sine") {
@@ -337,13 +347,14 @@
             playTone(500, 0.05);
         });
 
+        // REPARADO TEXTO DE RECUPERACIÓN CORPORATIVO Y PROFESIONAL
         authForgot.addEventListener('click', () => {
             authError.style.display = "none"; simulatedMailbox.style.display = "none"; clearInputs(); resetPasswordVisibility();
-            mode = "recovery_1"; authTitle.innerText = "🔑 RECUPERACIÓN SECURE-MAIL";
-            authDesc.innerText = "Tu vecino no pasará. Introduce tu usuario y tu email de registro exacto.";
+            mode = "recovery_1"; authTitle.innerText = "🔑 RESTABLECER CONTRASEÑA";
+            authDesc.innerText = "Por motivos de seguridad, introduce tu usuario y el correo electrónico con el que te registraste para restablecer tu clave.";
             authUsername.style.display = "block"; authEmail.style.display = "block"; wrapperPass.style.display = "none";
             wrapperConfirm.style.display = "none"; authToken.style.display = "none"; wrapperNewPass.style.display = "none";
-            btnAuthSubmit.innerText = "Verificar e Inyectar Email";
+            btnAuthSubmit.innerText = "Verificar Cuenta";
         });
 
         function clearInputs() {
