@@ -85,21 +85,26 @@
                 transform: translateX(-50%) scale(1.05);
             }
             
-            /* Ajuste extra para el contenedor del logo en móviles */
+            /* Ajuste quirúrgico para que el logo sea cuadrado y compacto en el móvil */
             .auth-logo-box {
-                max-width: 130px !important;
-                margin-bottom: 8px !important;
+                max-width: 150px !important;
+                margin-bottom: 2px !important;
+            }
+            .logo-real-img {
+                aspect-ratio: 1 / 1 !important; /* Forzamos formato cuadrado */
+                object-fit: cover !important;   /* Recorta los bordes largos sobrantes */
+                object-position: center !important; /* Centra el diseño del rayo */
             }
             .auth-overlay {
-                padding: 20px 15px !important;
+                padding: 15px 15px !important;
             }
             #auth-title {
-                margin-top: 2px !important;
+                margin-top: 5px !important;
                 margin-bottom: 2px !important;
                 font-size: 1.15rem !important;
             }
             #auth-desc {
-                margin-bottom: 10px !important;
+                margin-bottom: 12px !important;
                 font-size: 0.8rem !important;
             }
             .auth-form {
@@ -129,17 +134,21 @@
             align-items: center;
             margin-bottom: 15px;
             width: 100%;
-            max-width: 170px;
+            max-width: 180px;
             user-select: none;
         }
         .logo-real-img {
             width: 100%;
             height: auto;
+            aspect-ratio: 1 / 1;          /* Evita el efecto alargado en PC también */
+            object-fit: cover;            /* Absorbe los márgenes negros del formato wallpaper */
+            object-position: center;
+            border-radius: 16px;
             filter: drop-shadow(0 0 12px rgba(0, 255, 170, 0.4));
             animation: pulse-glow 3s infinite ease-in-out;
         }
         @keyframes pulse-glow {
-            0%, 100% { filter: drop-shadow(0 0 8px rgba(0, 255, 170, 0.35)); transform: scale(1); }
+            0%, 100 { filter: drop-shadow(0 0 8px rgba(0, 255, 170, 0.35)); transform: scale(1); }
             50% { filter: drop-shadow(0 0 18px rgba(0, 210, 255, 0.6)); transform: scale(1.02); }
         }
 
