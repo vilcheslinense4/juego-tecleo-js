@@ -36,7 +36,6 @@
             position: relative;
         }
 
-        /* BOTÓN VOLVER ATRÁS (ESTILO ESCRITORIO) */
         .btn-volver-global {
             position: absolute;
             top: -45px;
@@ -53,24 +52,13 @@
         }
         .btn-volver-global:hover { text-shadow: 0 0 10px #00ffaa; transform: translateX(-3px); }
 
-        /* AJUSTES RESPONSIVOS PARA MÓVIL */
         @media (max-width: 800px) {
-            body {
-                padding-top: 60px; /* Deja espacio arriba en móviles para que no se pegue al borde */
-            }
-            .game-container { 
-                grid-template-columns: 1fr; 
-                padding: 25px; 
-            }
+            body { padding-top: 60px; }
+            .game-container { grid-template-columns: 1fr; padding: 25px; }
             .btn-volver-global {
-                position: fixed; /* Se queda fijo arriba a la izquierda de la pantalla */
-                top: 15px;
-                left: 15px;
-                font-size: 0.85rem; /* Un pelín más compacto para pantallas pequeñas */
-                background: rgba(11, 19, 36, 0.9); /* Fondo sólido sutil para que no se mezcle con el fondo */
-                padding: 6px 12px;
-                border-radius: 8px;
-                border: 1px solid rgba(0, 255, 170, 0.2);
+                position: fixed; top: 15px; left: 15px; font-size: 0.85rem;
+                background: rgba(11, 19, 36, 0.9); padding: 6px 12px;
+                border-radius: 8px; border: 1px solid rgba(0, 255, 170, 0.2);
             }
         }
 
@@ -78,24 +66,13 @@
         .auth-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #0b1324;
-            border-radius: 24px;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
+            background: #0b1324; border-radius: 24px; z-index: 10;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px;
             transition: all 0.4s ease;
         }
         .auth-overlay.hidden { opacity: 0; pointer-events: none; transform: scale(0.95); }
-
         .auth-form { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 12px; }
-        
-        .password-wrapper {
-            position: relative;
-            width: 100%;
-        }
+        .password-wrapper { position: relative; width: 100%; }
         
         .auth-form input {
             width: 100%; background: #060913; border: 1px solid rgba(0,255,170,0.3);
@@ -110,10 +87,9 @@
             cursor: pointer; font-size: 1.1rem; user-select: none; transition: color 0.2s;
         }
         .toggle-password-btn:hover { color: #00ffaa; }
-        
         .error-msg { font-size: 0.8rem; color: #ff0055; text-align: center; font-weight: bold; display: none; line-height: 1.4; }
         
-        /* BANDEJA DE CORREO SIMULADA */
+        /* BANDEJA SIMULADA */
         .email-inbox-simulation {
             display: none; width: 100%; background: #121e36; border: 2px dashed #00d2ff;
             border-radius: 12px; padding: 15px; margin: 10px 0; text-align: left;
@@ -126,13 +102,8 @@
         .logo { font-weight: 800; font-size: 1.5rem; color: #00ffaa; text-shadow: 0 0 10px rgba(0,255,170,0.3); }
         
         .user-tag { 
-            font-size: 0.75rem; 
-            opacity: 0.8; 
-            background: rgba(255,255,255,0.05); 
-            padding: 4px 10px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            transition: all 0.2s;
+            font-size: 0.75rem; opacity: 0.8; background: rgba(255,255,255,0.05); 
+            padding: 4px 10px; border-radius: 12px; cursor: pointer; transition: all 0.2s;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .user-tag:hover { color: #ff0055; background: rgba(255,0,85,0.1); border-color: rgba(255,0,85,0.2); }
@@ -154,8 +125,7 @@
             background: rgba(0,0,0,0.4); border: 1px solid rgba(0,210,255,0.1);
             border-radius: 16px; padding: 22px; font-size: 1.4rem; line-height: 1.8;
             letter-spacing: 0.5px; margin-bottom: 20px; text-align: left;
-            height: 140px; overflow-y: hidden; user-select: none;
-            position: relative;
+            height: 140px; overflow-y: hidden; user-select: none; position: relative;
         }
         .char-correct { color: #00ffaa; text-shadow: 0 0 5px rgba(0,255,170,0.2); }
         .char-incorrect { color: #ff0055; background: rgba(255,0,85,0.15); border-radius: 3px; }
@@ -261,7 +231,7 @@
             <div id="text-target" class="text-challenge">Cargando diccionario...</div>
 
             <div class="input-area">
-                <textarea id="type-input" placeholder="Comienza a escribir el bloque de palabras para activar el reloj..." disabled></textarea>
+                <textarea id="type-input" placeholder="Comienza a escribir el bloque de palabras para activar el reloj..." disabled autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
             </div>
         </div>
 
@@ -327,7 +297,6 @@
         function getDB() { return JSON.parse(localStorage.getItem('cybertype_db_users')) || {}; }
         function saveDB(db) { localStorage.setItem('cybertype_db_users', JSON.stringify(db)); }
 
-        // OJOS CONTRASEÑAS
         document.querySelectorAll('.toggle-password-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const targetId = btn.getAttribute('data-target');
@@ -343,34 +312,70 @@
             document.querySelectorAll('.toggle-password-btn').forEach(btn => btn.innerText = "👁️");
         }
 
-        // Conmutador de Modos
-        authToggleBtn.addEventListener('click', () => {
-            authError.style.display = "none"; simulatedMailbox.style.display = "none"; clearInputs(); resetPasswordVisibility();
-            if (mode !== "register") {
-                mode = "register"; authTitle.innerText = "⚡ REGISTRAR CUENTA";
-                authDesc.innerText = "Crea un perfil único. Confirma tu contraseña para evitar fallos al escribir.";
-                authEmail.style.display = "block"; wrapperPass.style.display = "block"; wrapperConfirm.style.display = "block";
-                authToken.style.display = "none"; wrapperNewPass.style.display = "none"; btnAuthSubmit.innerText = "Crear Cuenta Pro";
-                toggleContainer.innerHTML = "¿Ya tienes cuenta? <span id='auth-toggle-btn' class='link-click'>Inicia sesión aquí</span>";
-            } else {
-                mode = "login"; authTitle.innerText = "⚡ INICIAR SESIÓN";
+        // CONTROLADOR DE ACCESO GLOBAL BIDIRECCIONAL
+        function setAuthMode(targetMode) {
+            authError.style.display = "none"; 
+            simulatedMailbox.style.display = "none"; 
+            clearInputs(); 
+            resetPasswordVisibility();
+            mode = targetMode;
+
+            if (mode === "login") {
+                authTitle.innerText = "⚡ INICIAR SESIÓN";
                 authDesc.innerText = "Identifícate para competir y guardar tus mejores marcas.";
-                authEmail.style.display = "none"; wrapperPass.style.display = "block"; wrapperConfirm.style.display = "none";
-                authToken.style.display = "none"; wrapperNewPass.style.display = "none"; btnAuthSubmit.innerText = "Acceder Seguro";
+                authUsername.style.display = "block";
+                authEmail.style.display = "none"; 
+                wrapperPass.style.display = "block"; 
+                wrapperConfirm.style.display = "none";
+                authToken.style.display = "none"; 
+                wrapperNewPass.style.display = "none"; 
+                btnAuthSubmit.innerText = "Acceder Seguro";
                 toggleContainer.innerHTML = "¿No tienes cuenta? <span id='auth-toggle-btn' class='link-click'>Regístrate aquí</span>";
+                authForgot.style.display = "block";
+            } 
+            else if (mode === "register") {
+                authTitle.innerText = "⚡ REGISTRAR CUENTA";
+                authDesc.innerText = "Crea un perfil único. Confirma tu contraseña para evitar fallos al escribir.";
+                authUsername.style.display = "block";
+                authEmail.style.display = "block"; 
+                wrapperPass.style.display = "block"; 
+                wrapperConfirm.style.display = "block";
+                authToken.style.display = "none"; 
+                wrapperNewPass.style.display = "none"; 
+                btnAuthSubmit.innerText = "Crear Cuenta Pro";
+                toggleContainer.innerHTML = "¿Ya tienes cuenta? <span id='auth-toggle-btn' class='link-click'>Inicia sesión aquí</span>";
+                authForgot.style.display = "block";
+            } 
+            else if (mode === "recovery_1") {
+                authTitle.innerText = "🔑 RESTABLECER CONTRASEÑA";
+                authDesc.innerText = "Por motivos de seguridad, introduce tu usuario y el correo electrónico con el que te registraste para restablecer tu clave.";
+                authUsername.style.display = "block"; 
+                authEmail.style.display = "block"; 
+                wrapperPass.style.display = "none";
+                wrapperConfirm.style.display = "none"; 
+                authToken.style.display = "none"; 
+                wrapperNewPass.style.display = "none";
+                btnAuthSubmit.innerText = "Verificar Cuenta";
+                toggleContainer.innerHTML = "¿Te has acordado? <span id='auth-toggle-btn' class='link-click'>Inicia sesión aquí</span>";
+                authForgot.style.display = "none";
             }
-            document.getElementById('auth-toggle-btn').addEventListener('click', arguments.callee);
+
+            // Delegación dinámica del click en el link cambiante
+            document.getElementById('auth-toggle-btn').addEventListener('click', () => {
+                if (mode === "login") setAuthMode("register");
+                else if (mode === "register") setAuthMode("login");
+                else if (mode === "recovery_1" || mode === "recovery_2") setAuthMode("login");
+                playTone(500, 0.05);
+            });
+        }
+
+        authForgot.addEventListener('click', () => {
+            setAuthMode("recovery_1");
             playTone(500, 0.05);
         });
 
-        authForgot.addEventListener('click', () => {
-            authError.style.display = "none"; simulatedMailbox.style.display = "none"; clearInputs(); resetPasswordVisibility();
-            mode = "recovery_1"; authTitle.innerText = "🔑 RESTABLECER CONTRASEÑA";
-            authDesc.innerText = "Por motivos de seguridad, introduce tu usuario y el correo electrónico con el que te registraste para restablecer tu clave.";
-            authUsername.style.display = "block"; authEmail.style.display = "block"; wrapperPass.style.display = "none";
-            wrapperConfirm.style.display = "none"; authToken.style.display = "none"; wrapperNewPass.style.display = "none";
-            btnAuthSubmit.innerText = "Verificar Cuenta";
-        });
+        // Carga el Login inicial de manera segura
+        setAuthMode("login");
 
         function clearInputs() {
             authUsername.value = ""; authEmail.value = ""; authPassword.value = ""; authConfirmPassword.value = ""; authToken.value = ""; authNewPassword.value = "";
@@ -405,6 +410,10 @@
                 mailboxTitle.innerText = `📩 Bandeja de entrada privada: ${email}`;
                 mailboxBody.innerHTML = `De: CyberType Security<br>Asunto: Restablecer Contraseña<br><br>Tu código de un solo uso es: <b style="color:#00ffaa; font-size:1.1rem; letter-spacing:1px;">${generatedToken}</b>`;
                 authToken.style.display = "block"; wrapperNewPass.style.display = "block"; btnAuthSubmit.innerText = "Confirmar y Cambiar Clave";
+                
+                // Opción extra para volverse atrás mientras se introduce el token
+                toggleContainer.innerHTML = "¿Volver al login? <span id='auth-toggle-btn' class='link-click'>Inicia sesión aquí</span>";
+                document.getElementById('auth-toggle-btn').addEventListener('click', () => { setAuthMode("login"); playTone(500, 0.05); });
                 playTone(700, 0.25, "square");
             } 
             else if (mode === "recovery_2") {
@@ -412,11 +421,10 @@
                 const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,}$/;
                 if (!reg.test(newPass)) { showError("La nueva contraseña debe tener 9+ caracteres, con mayúscula, minúscula y número."); return; }
                 db[targetUser].password = newPass; saveDB(db);
-                mode = "login"; authTitle.innerText = "⚡ CONTRASENA ACTUALIZADA";
+                setAuthMode("login");
+                authTitle.innerText = "⚡ CONTRASEÑA ACTUALIZADA";
                 authDesc.innerText = "Tu cuenta se ha restablecido de manera segura. Ya puedes loguearte.";
-                simulatedMailbox.style.display = "none"; authUsername.style.display = "block"; wrapperPass.style.display = "block";
-                wrapperConfirm.style.display = "none"; authToken.style.display = "none"; wrapperNewPass.style.display = "none";
-                btnAuthSubmit.innerText = "Acceder Seguro"; clearInputs(); resetPasswordVisibility(); playTone(880, 0.15);
+                playTone(880, 0.15);
             }
         });
 
@@ -430,7 +438,6 @@
 
         userDisplay.addEventListener('click', () => { clearInterval(timerInterval); localStorage.removeItem('cybertype_session_active'); location.reload(); });
 
-        // Selectores de tiempo
         timeBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 if (isPlaying) return;
