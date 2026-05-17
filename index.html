@@ -52,13 +52,37 @@
         }
         .btn-volver-global:hover { text-shadow: 0 0 10px #00ffaa; transform: translateX(-3px); }
 
+        /* RESPONSIVE CORREGIDO PARA EVITAR SOLAPAMIENTOS EN MÓVILES */
         @media (max-width: 800px) {
-            body { padding-top: 60px; }
-            .game-container { grid-template-columns: 1fr; padding: 25px; }
+            body { 
+                padding-top: 80px; 
+            }
+            .game-container { 
+                grid-template-columns: 1fr; 
+                padding: 20px; 
+                margin-top: 30px; 
+            }
+            header {
+                flex-direction: column; 
+                gap: 12px;
+                align-items: center;
+                margin-top: 25px; 
+            }
             .btn-volver-global {
-                position: fixed; top: 15px; left: 15px; font-size: 0.85rem;
-                background: rgba(11, 19, 36, 0.9); padding: 6px 12px;
-                border-radius: 8px; border: 1px solid rgba(0, 255, 170, 0.2);
+                position: absolute; 
+                top: -50px; 
+                left: 50%;
+                transform: translateX(-50%); 
+                background: rgba(11, 19, 36, 0.9); 
+                padding: 8px 16px;
+                border-radius: 20px; 
+                border: 1px solid rgba(0, 255, 170, 0.4);
+                width: auto;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            }
+            .btn-volver-global:hover {
+                transform: translateX(-50%) scale(1.05);
             }
         }
 
@@ -312,7 +336,6 @@
             document.querySelectorAll('.toggle-password-btn').forEach(btn => btn.innerText = "👁️");
         }
 
-        // CONTROLADOR DE ACCESO GLOBAL BIDIRECCIONAL
         function setAuthMode(targetMode) {
             authError.style.display = "none"; 
             simulatedMailbox.style.display = "none"; 
@@ -360,7 +383,6 @@
                 authForgot.style.display = "none";
             }
 
-            // Delegación dinámica del click en el link cambiante
             document.getElementById('auth-toggle-btn').addEventListener('click', () => {
                 if (mode === "login") setAuthMode("register");
                 else if (mode === "register") setAuthMode("login");
@@ -374,7 +396,6 @@
             playTone(500, 0.05);
         });
 
-        // Carga el Login inicial de manera segura
         setAuthMode("login");
 
         function clearInputs() {
@@ -411,7 +432,6 @@
                 mailboxBody.innerHTML = `De: CyberType Security<br>Asunto: Restablecer Contraseña<br><br>Tu código de un solo uso es: <b style="color:#00ffaa; font-size:1.1rem; letter-spacing:1px;">${generatedToken}</b>`;
                 authToken.style.display = "block"; wrapperNewPass.style.display = "block"; btnAuthSubmit.innerText = "Confirmar y Cambiar Clave";
                 
-                // Opción extra para volverse atrás mientras se introduce el token
                 toggleContainer.innerHTML = "¿Volver al login? <span id='auth-toggle-btn' class='link-click'>Inicia sesión aquí</span>";
                 document.getElementById('auth-toggle-btn').addEventListener('click', () => { setAuthMode("login"); playTone(500, 0.05); });
                 playTone(700, 0.25, "square");
