@@ -74,24 +74,32 @@
         .auth-overlay.hidden { opacity: 0; pointer-events: none; transform: scale(0.95); }
 
         .auth-form { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        
         .auth-form input {
             width: 100%; background: #060913; border: 1px solid rgba(0,255,170,0.3);
             padding: 12px; border-radius: 10px; color: white; outline: none; font-size: 0.95rem;
         }
         .auth-form input:focus { border-color: #00ffaa; }
+        .auth-form .input-password { padding-right: 42px; }
+
+        .toggle-password-btn {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: rgba(0, 255, 170, 0.6);
+            cursor: pointer; font-size: 1.1rem; user-select: none; transition: color 0.2s;
+        }
+        .toggle-password-btn:hover { color: #00ffaa; }
         
         .error-msg { font-size: 0.8rem; color: #ff0055; text-align: center; font-weight: bold; display: none; line-height: 1.4; }
         
-        /* BANDEJA DE CORREO SIMULADA (ANTIFRAUDE VISUAL) */
+        /* BANDEJA DE CORREO SIMULADA */
         .email-inbox-simulation {
-            display: none;
-            width: 100%;
-            background: #121e36;
-            border: 2px dashed #00d2ff;
-            border-radius: 12px;
-            padding: 15px;
-            margin: 10px 0;
-            text-align: left;
+            display: none; width: 100%; background: #121e36; border: 2px dashed #00d2ff;
+            border-radius: 12px; padding: 15px; margin: 10px 0; text-align: left;
         }
         .email-header { font-size: 0.75rem; color: #00d2ff; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;}
         .email-body { font-size: 0.85rem; color: #ffffff; background: #060913; padding: 10px; border-radius: 6px; border-left: 3px solid #00ffaa; }
@@ -119,11 +127,12 @@
             background: rgba(0,0,0,0.4); border: 1px solid rgba(0,210,255,0.1);
             border-radius: 16px; padding: 22px; font-size: 1.4rem; line-height: 1.8;
             letter-spacing: 0.5px; margin-bottom: 20px; text-align: left;
-            min-height: 130px; max-height: 180px; overflow: hidden; user-select: none;
+            height: 140px; overflow-y: hidden; user-select: none;
+            position: relative;
         }
         .char-correct { color: #00ffaa; text-shadow: 0 0 5px rgba(0,255,170,0.2); }
         .char-incorrect { color: #ff0055; background: rgba(255,0,85,0.15); border-radius: 3px; }
-        .char-current { border-bottom: 3px solid #00d2ff; animation: blink 0.8s infinite; }
+        .char-current { border-bottom: 3px solid #00d2ff; animation: blink 0.8s infinite; background: rgba(0,210,255,0.1); }
         @keyframes blink { 50% { border-color: transparent; } }
 
         .input-area textarea {
@@ -162,7 +171,16 @@
             <div class="auth-form">
                 <input type="text" id="auth-username" placeholder="Nombre de usuario...">
                 <input type="email" id="auth-email" placeholder="Correo electrónico de registro..." style="display: none;">
-                <input type="password" id="auth-password" placeholder="Contraseña de acceso...">
+                
+                <div id="wrapper-pass" class="password-wrapper">
+                    <input type="password" id="auth-password" class="input-password" placeholder="Contraseña de acceso...">
+                    <button type="button" class="toggle-password-btn" data-target="auth-password">👁️</button>
+                </div>
+
+                <div id="wrapper-confirm" class="password-wrapper" style="display: none;">
+                    <input type="password" id="auth-confirm-password" class="input-password" placeholder="Confirma tu contraseña...">
+                    <button type="button" class="toggle-password-btn" data-target="auth-confirm-password">👁️</button>
+                </div>
                 
                 <div id="simulated-mailbox" class="email-inbox-simulation">
                     <div id="mailbox-title" class="email-header">📩 Bandeja de entrada</div>
@@ -170,7 +188,11 @@
                 </div>
 
                 <input type="text" id="auth-token" placeholder="Introduce el código de verificación del mail..." style="display: none;">
-                <input type="password" id="auth-new-password" placeholder="Escribe tu nueva contraseña..." style="display: none;">
+                
+                <div id="wrapper-new-pass" class="password-wrapper" style="display: none;">
+                    <input type="password" id="auth-new-password" class="input-password" placeholder="Escribe tu nueva contraseña...">
+                    <button type="button" class="toggle-password-btn" data-target="auth-new-password">👁️</button>
+                </div>
                 
                 <div id="auth-error" class="error-msg"></div>
                 <button id="btn-auth-submit" class="btn-green">Acceder Seguro</button>
@@ -223,7 +245,8 @@
     </div>
 
     <script>
-        const bancoPalabras = ["javascript", "codigo", "frontend", "backend", "servidor", "desarrollo", "web", "interfaz", "diseño", "variable", "funcion", "objeto", "arreglo", "clase", "promesa", "asincrono", "estilo", "navegador", "consola", "error", "repositorio", "proyecto", "portafolio", "teclado", "velocidad", "precision", "datos", "almacenamiento", "local", "nube", "conexion", "red", "digital", "futuro", "tecnologia", "innovacion", "logica", "algoritmo", "estructura", "tiempo", "segundo", "minuto", "reloj", "record", "clasificacion", "aprendizaje", "practica", "software", "pantalla", "git", "github"];
+        // BANCO DE PALABRAS ACTUALIZADO CON TILDES SEGÚN LA RAE
+        const bancoPalabras = ["javascript", "código", "frontend", "backend", "servidor", "desarrollo", "web", "interfaz", "diseño", "variable", "función", "objeto", "arreglo", "clase", "promesa", "asíncrono", "estilo", "navegador", "consola", "error", "repositorio", "proyecto", "portafolio", "teclado", "velocidad", "precisión", "datos", "almacenamiento", "local", "nube", "conexión", "red", "digital", "futuro", "tecnología", "innovación", "lógica", "algoritmo", "estructura", "tiempo", "segundo", "minuto", "reloj", "récord", "clasificación", "aprendizaje", "práctica", "software", "pantalla", "informática", "computación", "píxel", "gráficos", "autenticación", "verificación"];
 
         function playTone(freq, duration, type="sine") {
             try {
@@ -241,12 +264,16 @@
         const authDesc = document.getElementById('auth-desc');
         const authUsername = document.getElementById('auth-username');
         const authEmail = document.getElementById('auth-email');
+        const wrapperPass = document.getElementById('wrapper-pass');
         const authPassword = document.getElementById('auth-password');
-        const authToken = document.getElementById('auth-token');
+        const wrapperConfirm = document.getElementById('wrapper-confirm');
+        const authConfirmPassword = document.getElementById('auth-confirm-password');
+        const wrapperNewPass = document.getElementById('wrapper-new-pass');
         const authNewPassword = document.getElementById('auth-new-password');
         const simulatedMailbox = document.getElementById('simulated-mailbox');
         const mailboxTitle = document.getElementById('mailbox-title');
         const mailboxBody = document.getElementById('mailbox-body');
+        const authToken = document.getElementById('auth-token');
         const authError = document.getElementById('auth-error');
         const btnAuthSubmit = document.getElementById('btn-auth-submit');
         const authToggleBtn = document.getElementById('auth-toggle-btn');
@@ -266,141 +293,104 @@
         const leaderboardEntries = document.getElementById('leaderboard-entries');
         const timeBtns = document.querySelectorAll('.time-btn');
 
-        let mode = "login"; // login, register, recovery_1, recovery_2
-        let generatedToken = "";
-        let targetUser = "";
-        let currentUser = "";
+        let mode = "login"; 
+        let generatedToken = ""; let targetUser = ""; let currentUser = "";
         let gameTime = 30; let timeLeft = 30; let timerInterval = null; let isPlaying = false;
         let fraseCompleta = ""; let erroresTotales = 0; let pulsacionesTotales = 0;
 
         function getDB() { return JSON.parse(localStorage.getItem('cybertype_db_users')) || {}; }
         function saveDB(db) { localStorage.setItem('cybertype_db_users', JSON.stringify(db)); }
 
-        // Cambiar entre Login y Registro
+        // OJOS CONTRASEÑAS
+        document.querySelectorAll('.toggle-password-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const inputField = document.getElementById(targetId);
+                if (inputField.type === "password") { inputField.type = "text"; btn.innerText = "✖️"; } 
+                else { inputField.type = "password"; btn.innerText = "👁️"; }
+                playTone(450, 0.03);
+            });
+        });
+
+        function resetPasswordVisibility() {
+            authPassword.type = "password"; authConfirmPassword.type = "password"; authNewPassword.type = "password";
+            document.querySelectorAll('.toggle-password-btn').forEach(btn => btn.innerText = "👁️");
+        }
+
+        // Conmutador de Modos
         authToggleBtn.addEventListener('click', () => {
-            authError.style.display = "none";
-            simulatedMailbox.style.display = "none";
-            clearInputs();
+            authError.style.display = "none"; simulatedMailbox.style.display = "none"; clearInputs(); resetPasswordVisibility();
             if (mode !== "register") {
-                mode = "register";
-                authTitle.innerText = "⚡ REGISTRAR CUENTA";
-                authDesc.innerText = "Crea un perfil único. Recuerda bien tu email para recuperaciones de seguridad.";
-                authEmail.style.display = "block";
-                authPassword.style.display = "block";
-                authToken.style.display = "none";
-                authNewPassword.style.display = "none";
-                btnAuthSubmit.innerText = "Crear Cuenta Pro";
+                mode = "register"; authTitle.innerText = "⚡ REGISTRAR CUENTA";
+                authDesc.innerText = "Crea un perfil único. Confirma tu contraseña para evitar fallos al escribir.";
+                authEmail.style.display = "block"; wrapperPass.style.display = "block"; wrapperConfirm.style.display = "block";
+                authToken.style.display = "none"; wrapperNewPass.style.display = "none"; btnAuthSubmit.innerText = "Crear Cuenta Pro";
                 toggleContainer.innerHTML = "¿Ya tienes cuenta? <span id='auth-toggle-btn' class='link-click'>Inicia sesión aquí</span>";
             } else {
-                mode = "login";
-                authTitle.innerText = "⚡ INICIAR SESIÓN";
+                mode = "login"; authTitle.innerText = "⚡ INICIAR SESIÓN";
                 authDesc.innerText = "Identifícate para competir y guardar tus mejores marcas.";
-                authEmail.style.display = "none";
-                authPassword.style.display = "block";
-                authToken.style.display = "none";
-                authNewPassword.style.display = "none";
-                btnAuthSubmit.innerText = "Acceder Seguro";
+                authEmail.style.display = "none"; wrapperPass.style.display = "block"; wrapperConfirm.style.display = "none";
+                authToken.style.display = "none"; wrapperNewPass.style.display = "none"; btnAuthSubmit.innerText = "Acceder Seguro";
                 toggleContainer.innerHTML = "¿No tienes cuenta? <span id='auth-toggle-btn' class='link-click'>Regístrate aquí</span>";
             }
-            // Re-vincular evento ya que reescribimos el HTML interno
             document.getElementById('auth-toggle-btn').addEventListener('click', arguments.callee);
             playTone(500, 0.05);
         });
 
-        // Activar Formulario de Contraseña Olvidada
         authForgot.addEventListener('click', () => {
-            authError.style.display = "none";
-            simulatedMailbox.style.display = "none";
-            clearInputs();
-            mode = "recovery_1";
-            authTitle.innerText = "🔑 RECUPERACIÓN SECURE-MAIL";
+            authError.style.display = "none"; simulatedMailbox.style.display = "none"; clearInputs(); resetPasswordVisibility();
+            mode = "recovery_1"; authTitle.innerText = "🔑 RECUPERACIÓN SECURE-MAIL";
             authDesc.innerText = "Tu vecino no pasará. Introduce tu usuario y tu email de registro exacto.";
-            authUsername.style.display = "block";
-            authEmail.style.display = "block";
-            authPassword.style.display = "none";
-            authToken.style.display = "none";
-            authNewPassword.style.display = "none";
+            authUsername.style.display = "block"; authEmail.style.display = "block"; wrapperPass.style.display = "none";
+            wrapperConfirm.style.display = "none"; authToken.style.display = "none"; wrapperNewPass.style.display = "none";
             btnAuthSubmit.innerText = "Verificar e Inyectar Email";
         });
 
         function clearInputs() {
-            authUsername.value = ""; authEmail.value = ""; authPassword.value = ""; authToken.value = ""; authNewPassword.value = "";
+            authUsername.value = ""; authEmail.value = ""; authPassword.value = ""; authConfirmPassword.value = ""; authToken.value = ""; authNewPassword.value = "";
         }
 
-        // Lógica de Ejecución del Botón Principal
         btnAuthSubmit.addEventListener('click', () => {
-            const user = authUsername.value.trim();
-            const email = authEmail.value.trim();
-            const pass = authPassword.value;
-            const tokenIn = authToken.value.trim();
-            const newPass = authNewPassword.value;
-            const db = getDB();
-            authError.style.display = "none";
+            const user = authUsername.value.trim(); const email = authEmail.value.trim(); const pass = authPassword.value;
+            const confirmPass = authConfirmPassword.value; const tokenIn = authToken.value.trim(); const newPass = authNewPassword.value;
+            const db = getDB(); authError.style.display = "none";
 
             if (mode === "login") {
-                if (db[user] && db[user].password === pass) { login(user); }
-                else { showError("Credenciales incorrectas."); }
+                if (db[user] && db[user].password === pass) { login(user); } else { showError("Credenciales incorrectas."); }
             } 
             else if (mode === "register") {
                 if (user.length < 3) { showError("Usuario demasiado corto (mínimo 3)."); return; }
                 if (!email.includes("@") || email.length < 5) { showError("Escribe una dirección de email válida."); return; }
                 if (db[user]) { showError("Este usuario ya existe."); return; }
+                if (pass !== confirmPass) { showError("Las contraseñas no coinciden. Revísalas con el ojo 👁️."); return; }
                 
                 const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,}$/;
                 if (!reg.test(pass)) { showError("Clave débil. Debe tener 9+ caracteres, 1 mayúscula, 1 minúscula y 1 número."); return; }
                 
-                db[user] = { email: email, password: pass, record: 0 };
-                saveDB(db); login(user);
+                db[user] = { email: email, password: pass, record: 0 }; saveDB(db); login(user);
             } 
-            // PASO 1 RECUPERACIÓN: Bloqueo Anti-Vecinos
             else if (mode === "recovery_1") {
-                // Si los datos no encajan perfectamente, da error genérico para despistar atacantes
-                if (!db[user] || db[user].email !== email) { 
-                    showError("Los datos introducidos no coinciden con ningún registro."); 
-                    return; 
-                }
-
-                // Generamos código único de 6 dígitos
-                generatedToken = Math.floor(100000 + Math.random() * 900000).toString();
-                targetUser = user;
-                mode = "recovery_2";
-
+                if (!db[user] || db[user].email !== email) { showError("Los datos introducidos no coinciden con ningún registro."); return; }
+                generatedToken = Math.floor(100000 + Math.random() * 900000).toString(); targetUser = user; mode = "recovery_2";
                 authTitle.innerText = "🔒 VERIFICACIÓN DE BANDEJA";
                 authDesc.innerText = "Acceso legítimo concedido. Copia el token de seguridad que ha llegado a tu bandeja simulada.";
-                authUsername.style.display = "none";
-                authEmail.style.display = "none";
-                
-                // Mostrar el simulador de correo privado en pantalla
+                authUsername.style.display = "none"; authEmail.style.display = "none";
                 simulatedMailbox.style.display = "block";
                 mailboxTitle.innerText = `📩 Bandeja de entrada privada: ${email}`;
                 mailboxBody.innerHTML = `De: CyberType Security<br>Asunto: Restablecer Contraseña<br><br>Tu código de un solo uso es: <b style="color:#00ffaa; font-size:1.1rem; letter-spacing:1px;">${generatedToken}</b>`;
-                
-                authToken.style.display = "block";
-                authNewPassword.style.display = "block";
-                btnAuthSubmit.innerText = "Confirmar y Cambiar Clave";
+                authToken.style.display = "block"; wrapperNewPass.style.display = "block"; btnAuthSubmit.innerText = "Confirmar y Cambiar Clave";
                 playTone(700, 0.25, "square");
             } 
-            // PASO 2 RECUPERACIÓN: Modificación Segura
             else if (mode === "recovery_2") {
                 if (tokenIn !== generatedToken) { showError("Código de verificación erróneo."); return; }
-                
                 const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,}$/;
                 if (!reg.test(newPass)) { showError("La nueva contraseña debe tener 9+ caracteres, con mayúscula, minúscula y número."); return; }
-                
-                db[targetUser].password = newPass;
-                saveDB(db);
-                
-                mode = "login";
-                authTitle.innerText = "⚡ CONTRASENA ACTUALIZADA";
+                db[targetUser].password = newPass; saveDB(db);
+                mode = "login"; authTitle.innerText = "⚡ CONTRASENA ACTUALIZADA";
                 authDesc.innerText = "Tu cuenta se ha restablecido de manera segura. Ya puedes loguearte.";
-                simulatedMailbox.style.display = "none";
-                authUsername.style.display = "block";
-                authPassword.style.display = "block";
-                authToken.style.display = "none";
-                authNewPassword.style.display = "none";
-                btnAuthSubmit.innerText = "Acceder Seguro";
-                clearInputs();
-                playTone(880, 0.15);
+                simulatedMailbox.style.display = "none"; authUsername.style.display = "block"; wrapperPass.style.display = "block";
+                wrapperConfirm.style.display = "none"; authToken.style.display = "none"; wrapperNewPass.style.display = "none";
+                btnAuthSubmit.innerText = "Acceder Seguro"; clearInputs(); resetPasswordVisibility(); playTone(880, 0.15);
             }
         });
 
@@ -414,7 +404,7 @@
 
         userDisplay.addEventListener('click', () => { clearInterval(timerInterval); localStorage.removeItem('cybertype_session_active'); location.reload(); });
 
-        // Mecánica del juego (MonkeyType Infinito)
+        // Selectores de tiempo
         timeBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 if (isPlaying) return;
@@ -423,43 +413,66 @@
             });
         });
 
-        function generateInfiniteWords() {
-            let totalPalabras = []; for (let i = 0; i < 80; i++) { totalPalabras.push(bancoPalabras[Math.floor(Math.random() * bancoPalabras.length)]); }
-            fraseCompleta = totalPalabras.join(" "); textTarget.innerHTML = "";
-            fraseCompleta.split("").forEach((char, index) => {
-                const span = document.createElement('span'); span.innerText = char;
-                if (index === 0) span.className = "char-current"; textTarget.appendChild(span);
-            });
+        function generateMoreWords(quantity) {
+            let chunk = [];
+            for (let i = 0; i < quantity; i++) {
+                chunk.push(bancoPalabras[Math.floor(Math.random() * bancoPalabras.length)]);
+            }
+            return chunk.join(" ");
         }
 
         function initGame() {
             clearInterval(timerInterval); isPlaying = false; timeLeft = gameTime; erroresTotales = 0; pulsacionesTotales = 0;
             timerDisplay.innerText = `${timeLeft}s`; ppmDisplay.innerText = "0 PPM"; precisionDisplay.innerText = "100%";
             typeInput.value = ""; typeInput.disabled = false; resultsBox.classList.remove('active'); recordAlert.style.display = "none";
-            generateInfiniteWords(); updateLeaderboard(); typeInput.focus();
+            
+            fraseCompleta = generateMoreWords(60);
+            textTarget.innerHTML = "";
+            fraseCompleta.split("").forEach((char, index) => {
+                const span = document.createElement('span'); span.innerText = char;
+                if (index === 0) span.className = "char-current"; textTarget.appendChild(span);
+            });
+
+            updateLeaderboard(); typeInput.focus();
         }
 
         typeInput.addEventListener('input', () => {
             if (!isPlaying) { isPlaying = true; startTimer(); }
-            const escrito = typeInput.value; const spans = textTarget.querySelectorAll('span'); pulsacionesTotales++;
+            const escrito = typeInput.value;
+            const spans = textTarget.querySelectorAll('span');
+            pulsacionesTotales++;
 
-            if (escrito.length > spans.length - 40) {
-                let extras = []; for (let i = 0; i < 40; i++) { extras.push(bancoPalabras[Math.floor(Math.random() * bancoPalabras.length)]); }
-                let masTexto = " " + extras.join(" "); fraseCompleta += masTexto;
-                masTexto.split("").forEach(char => { const span = document.createElement('span'); span.innerText = char; textTarget.appendChild(span); });
+            if (escrito.length > spans.length / 2) {
+                let extraText = " " + generateMoreWords(40);
+                fraseCompleta += extraText;
+                extraText.split("").forEach(char => {
+                    const span = document.createElement('span'); span.innerText = char;
+                    textTarget.appendChild(span);
+                });
             }
 
-            let correctos = 0; erroresTotales = 0; const nuevosSpans = textTarget.querySelectorAll('span');
-            nuevosSpans.forEach((span, index) => {
+            let correctos = 0; erroresTotales = 0;
+            const actualesSpans = textTarget.querySelectorAll('span');
+            
+            actualesSpans.forEach((span, index) => {
                 const charEscrito = escrito[index];
-                if (charEscrito == null) { span.className = index === escrito.length ? "char-current" : ""; } 
-                else if (charEscrito === span.innerText) { span.className = "char-correct"; correctos++; } 
-                else { span.className = "char-incorrect"; erroresTotales++; }
+                if (charEscrito == null) {
+                    span.className = index === escrito.length ? "char-current" : "";
+                } else if (charEscrito === span.innerText) {
+                    span.className = "char-correct"; correctos++;
+                } else {
+                    span.className = "char-incorrect"; erroresTotales++;
+                }
             });
 
             if (escrito.length > 0) {
-                if (escrito[escrito.length - 1] === nuevosSpans[escrito.length - 1].innerText) { playTone(850, 0.02); } 
+                if (escrito[escrito.length - 1] === actualesSpans[escrito.length - 1].innerText) { playTone(850, 0.02); } 
                 else { playTone(280, 0.05, "triangle"); }
+            }
+
+            const currentSpan = textTarget.querySelector('.char-current');
+            if (currentSpan) {
+                textTarget.scrollTop = currentSpan.offsetTop - 50;
             }
 
             let minutosEfectivos = (gameTime - timeLeft) / 60;
