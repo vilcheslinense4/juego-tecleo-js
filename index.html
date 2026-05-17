@@ -97,41 +97,25 @@
         }
         .auth-overlay.hidden { opacity: 0; pointer-events: none; transform: scale(0.95); }
         
-        /* DISEÑO EXCLUSIVO DEL LOGO EN VECTOR/CSS */
+        /* CONTENEDOR AJUSTADO PARA EL LOGO ORIGINAL */
         .auth-logo-box {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 250px;
             user-select: none;
         }
-        .logo-icon-svg {
-            width: 75px;
-            height: 75px;
-            filter: drop-shadow(0 0 12px rgba(0, 255, 170, 0.6));
+        .logo-real-img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 0 15px rgba(0, 255, 170, 0.45));
             animation: pulse-glow 3s infinite ease-in-out;
-            margin-bottom: 5px;
-        }
-        .logo-text-main {
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: 4px;
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
-            text-transform: uppercase;
-        }
-        .logo-text-sub {
-            font-size: 0.75rem;
-            font-weight: bold;
-            letter-spacing: 6px;
-            color: #00d2ff;
-            text-transform: uppercase;
-            margin-top: -2px;
-            opacity: 0.9;
         }
         @keyframes pulse-glow {
-            0%, 100% { filter: drop-shadow(0 0 8px rgba(0, 255, 170, 0.5)); transform: scale(1); }
-            50% { filter: drop-shadow(0 0 18px rgba(0, 210, 255, 0.9)); transform: scale(1.03); }
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 255, 170, 0.4)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 22px rgba(0, 210, 255, 0.7)); transform: scale(1.02); }
         }
 
         .auth-form { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 12px; }
@@ -227,16 +211,10 @@
         <div id="auth-box" class="auth-overlay">
             
             <div class="auth-logo-box">
-                <svg class="logo-icon-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M 35 25 C 20 25, 15 40, 15 50 C 15 60, 20 75, 35 75" stroke="#00ffaa" stroke-width="7" stroke-linecap="round"/>
-                    <path d="M 50 25 L 80 25" stroke="#00d2ff" stroke-width="7" stroke-linecap="round"/>
-                    <path d="M 60 20 L 40 52 L 56 52 L 36 82" stroke="#00ffaa" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
-                </svg>
-                <div class="logo-text-main">CyberType</div>
-                <div id="logo-subtext" class="logo-text-sub">⚡ Pro Run</div>
+                <img src="IMG_8182.png" alt="CyberType Pro" class="logo-real-img">
             </div>
 
-            <h2 id="auth-title" style="font-size: 1.25rem; letter-spacing: 1px; color: #00ffaa; margin-bottom: 4px;">⚡ INICIAR SESIÓN</h2>
+            <h2 id="auth-title" style="font-size: 1.25rem; letter-spacing: 1px; color: #00ffaa; margin-bottom: 4px; margin-top: 10px;">⚡ INICIAR SESIÓN</h2>
             <p id="auth-desc" style="opacity: 0.7; font-size: 0.85rem; margin-bottom: 15px; text-align: center; max-width: 320px;">Identifícate para competir y guardar tus mejores marcas.</p>
             
             <div class="auth-form">
@@ -332,7 +310,6 @@
         const authBox = document.getElementById('auth-box');
         const authTitle = document.getElementById('auth-title');
         const authDesc = document.getElementById('auth-desc');
-        const logoSubtext = document.getElementById('logo-subtext');
         const authUsername = document.getElementById('auth-username');
         const authEmail = document.getElementById('auth-email');
         const wrapperPass = document.getElementById('wrapper-pass');
@@ -397,7 +374,6 @@
             if (mode === "login") {
                 authTitle.innerText = "⚡ INICIAR SESIÓN";
                 authDesc.innerText = "Identifícate para competir y guardar tus mejores marcas.";
-                logoSubtext.innerText = "⚡ PRO RUN";
                 authUsername.style.display = "block";
                 authEmail.style.display = "none"; 
                 wrapperPass.style.display = "block"; 
@@ -411,7 +387,6 @@
             else if (mode === "register") {
                 authTitle.innerText = "⚡ REGISTRAR CUENTA";
                 authDesc.innerText = "Crea un perfil único para registrar marcas en la clasificación.";
-                logoSubtext.innerText = "🏆 JOIN US";
                 authUsername.style.display = "block";
                 authEmail.style.display = "block"; 
                 wrapperPass.style.display = "block"; 
@@ -425,7 +400,6 @@
             else if (mode === "recovery_1") {
                 authTitle.innerText = "🔑 RESTABLECER CONTRASEÑA";
                 authDesc.innerText = "Introduce tus datos registrados para recibir un token cifrado.";
-                logoSubtext.innerText = "🔒 RECOVERY";
                 authUsername.style.display = "block"; 
                 authEmail.style.display = "block"; 
                 wrapperPass.style.display = "none";
@@ -582,8 +556,8 @@
                 textTarget.scrollTop = currentSpan.offsetTop - 50;
             }
 
-            let minutosEfectivos = (gameTime - timeLeft) / 60;
-            if (minutosEfectivos > 0) { ppmDisplay.innerText = `${Math.round((correctos / 5) / minutosEfectivos)} PPM`; }
+            let minutesEfectivos = (gameTime - timeLeft) / 60;
+            if (minutosEfectivos > 0) { ppmDisplay.innerText = `${Math.round((correctos / 5) / minutesEfectivos)} PPM`; }
             let prec = Math.round(((pulsacionesTotales - erroresTotales) / pulsacionesTotales) * 100);
             precisionDisplay.innerText = `${Math.max(0, prec)}%`;
         });
