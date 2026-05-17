@@ -93,8 +93,47 @@
             background: #0b1324; border-radius: 24px; z-index: 10;
             display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px;
             transition: all 0.4s ease;
+            overflow-y: auto;
         }
         .auth-overlay.hidden { opacity: 0; pointer-events: none; transform: scale(0.95); }
+        
+        /* DISEÑO EXCLUSIVO DEL LOGO EN VECTOR/CSS */
+        .auth-logo-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        .logo-icon-svg {
+            width: 75px;
+            height: 75px;
+            filter: drop-shadow(0 0 12px rgba(0, 255, 170, 0.6));
+            animation: pulse-glow 3s infinite ease-in-out;
+            margin-bottom: 5px;
+        }
+        .logo-text-main {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+            text-transform: uppercase;
+        }
+        .logo-text-sub {
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            color: #00d2ff;
+            text-transform: uppercase;
+            margin-top: -2px;
+            opacity: 0.9;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(0, 255, 170, 0.5)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 18px rgba(0, 210, 255, 0.9)); transform: scale(1.03); }
+        }
+
         .auth-form { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 12px; }
         .password-wrapper { position: relative; width: 100%; }
         
@@ -186,8 +225,19 @@
         <a href="https://vilcheslinense4.github.io/Mi-primer-portafolios/index.html" class="btn-volver-global">← Volver a proyectos</a>
 
         <div id="auth-box" class="auth-overlay">
-            <h2 id="auth-title">⚡ INICIAR SESIÓN</h2>
-            <p id="auth-desc" style="opacity: 0.7; font-size: 0.9rem; margin-bottom: 20px; text-align: center;">Identifícate para competir y guardar tus mejores marcas.</p>
+            
+            <div class="auth-logo-box">
+                <svg class="logo-icon-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 35 25 C 20 25, 15 40, 15 50 C 15 60, 20 75, 35 75" stroke="#00ffaa" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 50 25 L 80 25" stroke="#00d2ff" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 60 20 L 40 52 L 56 52 L 36 82" stroke="#00ffaa" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+                </svg>
+                <div class="logo-text-main">CyberType</div>
+                <div id="logo-subtext" class="logo-text-sub">⚡ Pro Run</div>
+            </div>
+
+            <h2 id="auth-title" style="font-size: 1.25rem; letter-spacing: 1px; color: #00ffaa; margin-bottom: 4px;">⚡ INICIAR SESIÓN</h2>
+            <p id="auth-desc" style="opacity: 0.7; font-size: 0.85rem; margin-bottom: 15px; text-align: center; max-width: 320px;">Identifícate para competir y guardar tus mejores marcas.</p>
             
             <div class="auth-form">
                 <input type="text" id="auth-username" placeholder="Nombre de usuario...">
@@ -216,7 +266,7 @@
                 </div>
                 
                 <div id="auth-error" class="error-msg"></div>
-                <button id="btn-auth-submit" class="btn-green">Acceder Seguro</button>
+                <button id="btn-auth-submit" class="btn-green" style="padding: 12px;">Acceder Seguro</button>
             </div>
             
             <div class="auth-footer-links">
@@ -282,6 +332,7 @@
         const authBox = document.getElementById('auth-box');
         const authTitle = document.getElementById('auth-title');
         const authDesc = document.getElementById('auth-desc');
+        const logoSubtext = document.getElementById('logo-subtext');
         const authUsername = document.getElementById('auth-username');
         const authEmail = document.getElementById('auth-email');
         const wrapperPass = document.getElementById('wrapper-pass');
@@ -346,6 +397,7 @@
             if (mode === "login") {
                 authTitle.innerText = "⚡ INICIAR SESIÓN";
                 authDesc.innerText = "Identifícate para competir y guardar tus mejores marcas.";
+                logoSubtext.innerText = "⚡ PRO RUN";
                 authUsername.style.display = "block";
                 authEmail.style.display = "none"; 
                 wrapperPass.style.display = "block"; 
@@ -358,7 +410,8 @@
             } 
             else if (mode === "register") {
                 authTitle.innerText = "⚡ REGISTRAR CUENTA";
-                authDesc.innerText = "Crea un perfil único. Confirma tu contraseña para evitar fallos al escribir.";
+                authDesc.innerText = "Crea un perfil único para registrar marcas en la clasificación.";
+                logoSubtext.innerText = "🏆 JOIN US";
                 authUsername.style.display = "block";
                 authEmail.style.display = "block"; 
                 wrapperPass.style.display = "block"; 
@@ -371,7 +424,8 @@
             } 
             else if (mode === "recovery_1") {
                 authTitle.innerText = "🔑 RESTABLECER CONTRASEÑA";
-                authDesc.innerText = "Por motivos de seguridad, introduce tu usuario y el correo electrónico con el que te registraste para restablecer tu clave.";
+                authDesc.innerText = "Introduce tus datos registrados para recibir un token cifrado.";
+                logoSubtext.innerText = "🔒 RECOVERY";
                 authUsername.style.display = "block"; 
                 authEmail.style.display = "block"; 
                 wrapperPass.style.display = "none";
@@ -425,11 +479,11 @@
                 if (!db[user] || db[user].email !== email) { showError("Los datos introducidos no coinciden con ningún registro."); return; }
                 generatedToken = Math.floor(100000 + Math.random() * 900000).toString(); targetUser = user; mode = "recovery_2";
                 authTitle.innerText = "🔒 VERIFICACIÓN DE BANDEJA";
-                authDesc.innerText = "Acceso legítimo concedido. Copia el token de seguridad que ha llegado a tu bandeja simulada.";
+                authDesc.innerText = "Copia el token de seguridad que ha llegado a tu bandeja simulada.";
                 authUsername.style.display = "none"; authEmail.style.display = "none";
                 simulatedMailbox.style.display = "block";
                 mailboxTitle.innerText = `📩 Bandeja de entrada privada: ${email}`;
-                mailboxBody.innerHTML = `De: CyberType Security<br>Asunto: Restablecer Contraseña<br><br>Tu código de un solo uso es: <b style="color:#00ffaa; font-size:1.1rem; letter-spacing:1px;">${generatedToken}</b>`;
+                mailboxBody.innerHTML = `De: CyberType Security<br>Asunto: Restablecer Contraseña<br><br>Tu código es: <b style="color:#00ffaa; font-size:1.1rem; letter-spacing:1px;">${generatedToken}</b>`;
                 authToken.style.display = "block"; wrapperNewPass.style.display = "block"; btnAuthSubmit.innerText = "Confirmar y Cambiar Clave";
                 
                 toggleContainer.innerHTML = "¿Volver al login? <span id='auth-toggle-btn' class='link-click'>Inicia sesión aquí</span>";
