@@ -23,9 +23,9 @@
         .game-container {
             background: rgba(11, 19, 36, 0.85);
             width: 100%;
-            max-width: 750px;
+            max-width: 850px;
             border-radius: 24px;
-            padding: 30px;
+            padding: 40px;
             border: 1px solid rgba(0, 255, 170, 0.2);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -36,11 +36,27 @@
             position: relative;
         }
 
-        @media (max-width: 650px) {
-            .game-container { grid-template-columns: 1fr; }
+        @media (max-width: 800px) {
+            .game-container { grid-template-columns: 1fr; padding: 25px; }
         }
 
-        /* Bloque del Sistema de Autenticación Avanzado */
+        /* Botón Volver Independiente (Top-Left) */
+        .btn-volver-global {
+            position: absolute;
+            top: -45px;
+            left: 5px;
+            color: #00ffaa;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        .btn-volver-global:hover { text-shadow: 0 0 10px #00ffaa; transform: translateX(-3px); }
+
+        /* Autenticación */
         .auth-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -56,178 +72,146 @@
         }
         .auth-overlay.hidden { opacity: 0; pointer-events: none; transform: scale(0.95); }
 
-        .auth-overlay h2 { font-size: 2rem; color: #00ffaa; text-shadow: 0 0 15px rgba(0,255,170,0.3); margin-bottom: 5px; }
-        .auth-overlay p { opacity: 0.7; margin-bottom: 20px; text-align: center; font-size: 0.9rem; }
-        
         .auth-form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 12px; }
         .auth-form input {
             width: 100%; background: #060913; border: 1px solid rgba(0,255,170,0.3);
-            padding: 10px 14px; border-radius: 10px; color: white; outline: none; font-size: 0.95rem;
+            padding: 12px; border-radius: 10px; color: white; outline: none; font-size: 0.95rem;
         }
-        .auth-form input:focus { border-color: #00ffaa; box-shadow: 0 0 10px rgba(0,255,170,0.2); }
-        
-        .auth-toggle-text { margin-top: 15px; font-size: 0.85rem; opacity: 0.6; cursor: pointer; transition: color 0.2s; }
-        .auth-toggle-text span { color: #00d2ff; font-weight: bold; text-decoration: underline; }
-        .auth-toggle-text span:hover { color: #00ffaa; }
+        .auth-form input:focus { border-color: #00ffaa; }
+        .error-msg { font-size: 0.8rem; color: #ff0055; text-align: center; font-weight: bold; display: none; line-height: 1.4; }
 
-        .btn-green {
-            background: #00ffaa; color: #060913; border: none; padding: 12px 24px;
-            border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .btn-green:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,255,170,0.4); }
-
-        /* Área de Juego Principal */
-        .main-game { display: flex; flex-direction: column; justify-content: space-between; }
-        
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
-        .logo { font-weight: 800; font-size: 1.3rem; color: #00ffaa; text-shadow: 0 0 10px rgba(0,255,170,0.3); }
-        
-        .header-actions { display: flex; align-items: center; gap: 12px; }
-        .btn-volver { color: rgba(255, 255, 255, 0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
-        .btn-volver:hover { color: #00ffaa; }
-        .user-tag { font-size: 0.85rem; opacity: 0.6; background: rgba(255,255,255,0.05); padding: 4px 12px; border-radius: 20px; cursor: pointer; }
+        /* Área de Juego */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo { font-weight: 800; font-size: 1.5rem; color: #00ffaa; text-shadow: 0 0 10px rgba(0,255,170,0.3); }
+        .user-tag { font-size: 0.85rem; opacity: 0.6; background: rgba(255,255,255,0.05); padding: 6px 15px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
         .user-tag:hover { color: #ff0055; background: rgba(255,0,85,0.1); }
 
-        /* Cuadros de Estadísticas */
-        .stats-row { display: flex; gap: 15px; margin-bottom: 20px; }
-        .stat-box {
-            flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);
-            padding: 12px; border-radius: 14px; text-align: center;
+        /* Selector de Tiempo */
+        .time-selector {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-start;
+            margin-bottom: 20px;
         }
-        .stat-box span { display: block; font-size: 0.75rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 4px; }
-        .stat-box p { font-size: 1.5rem; font-weight: 800; color: #00d2ff; }
-        .stat-box p.highlight { color: #00ffaa; text-shadow: 0 0 10px rgba(0,255,170,0.3); }
+        .time-btn {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,210,255,0.2);
+            color: #00d2ff;
+            padding: 6px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .time-btn.active { background: #00d2ff; color: #060913; box-shadow: 0 0 15px rgba(0,210,255,0.3); border-color: #00d2ff; }
 
-        /* El texto del reto */
+        .stats-row { display: flex; gap: 15px; margin-bottom: 20px; }
+        .stat-box { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 14px; text-align: center; }
+        .stat-box span { display: block; font-size: 0.75rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 2px; }
+        .stat-box p { font-size: 1.5rem; font-weight: 800; color: #00d2ff; }
+        .stat-box p.highlight { color: #00ffaa; text-shadow: 0 0 10px rgba(0,255,170,0.2); }
+
+        /* Caja de Palabras (Estilo MonkeyType) */
         .text-challenge {
             background: rgba(0,0,0,0.4); border: 1px solid rgba(0,210,255,0.1);
-            border-radius: 16px; padding: 20px; font-size: 1.25rem; line-height: 1.6;
+            border-radius: 16px; padding: 22px; font-size: 1.4rem; line-height: 1.8;
             letter-spacing: 0.5px; margin-bottom: 20px; text-align: left;
-            user-select: none; -webkit-user-select: none; min-height: 110px;
+            min-height: 130px; max-height: 180px; overflow: hidden;
+            user-select: none; -webkit-user-select: none;
         }
-        .char-correct { color: #00ffaa; text-shadow: 0 0 8px rgba(0,255,170,0.4); background: rgba(0,255,170,0.1); border-radius: 2px; }
-        .char-incorrect { color: #ff0055; text-shadow: 0 0 8px rgba(255,0,85,0.4); background: rgba(255,0,85,0.15); border-radius: 2px; }
+        .char-correct { color: #00ffaa; text-shadow: 0 0 5px rgba(0,255,170,0.2); }
+        .char-incorrect { color: #ff0055; background: rgba(255,0,85,0.15); border-radius: 3px; }
         .char-current { border-bottom: 3px solid #00d2ff; animation: blink 0.8s infinite; }
         @keyframes blink { 50% { border-color: transparent; } }
 
-        /* Cuadro de escritura */
-        .input-area { width: 100%; position: relative; }
         .input-area textarea {
-            width: 100%; height: 50px; background: #060913; border: 2px solid rgba(0,210,255,0.2);
-            border-radius: 14px; padding: 12px 16px; color: white; font-size: 1.1rem;
+            width: 100%; height: 55px; background: #060913; border: 2px solid rgba(0,210,255,0.2);
+            border-radius: 14px; padding: 12px; color: white; font-size: 1.15rem;
             outline: none; resize: none; transition: border-color 0.3s;
         }
-        .input-area textarea:focus { border-color: #00d2ff; box-shadow: 0 0 15px rgba(0,210,255,0.15); }
-        .input-area textarea:disabled { opacity: 0.3; cursor: not-allowed; }
+        .input-area textarea:focus { border-color: #00d2ff; box-shadow: 0 0 15px rgba(0,210,255,0.1); }
 
-        /* Barra Lateral: Tabla de Clasificación */
-        .leaderboard-side {
-            background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 18px; padding: 15px; display: flex; flex-direction: column;
-        }
-        .leaderboard-side h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: #00d2ff; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        
-        .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
-        .leader-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 12px; background: rgba(255,255,255,0.02); border-radius: 8px; font-size: 0.85rem;
-        }
-        .leader-item.top-rank { border-left: 3px solid #00ffaa; background: rgba(0,255,170,0.03); }
+        /* Clasificación */
+        .leaderboard-side { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; }
+        .leaderboard-side h3 { font-size: 0.85rem; text-transform: uppercase; color: #00d2ff; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.05); letter-spacing: 0.5px; }
+        .leader-item { display: flex; justify-content: space-between; padding: 8px 10px; background: rgba(255,255,255,0.02); border-radius: 8px; font-size: 0.85rem; margin-bottom: 8px; }
         .leader-item.user-rank { border-left: 3px solid #00d2ff; background: rgba(0,210,255,0.05); font-weight: bold; }
-        .leader-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
-        .leader-score { font-family: monospace; font-weight: bold; color: #00d2ff; }
 
-        /* Modal / Alerta de Fin de partida */
+        /* Resultados */
         .results-modal {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(6, 9, 19, 0.95); border-radius: 24px; z-index: 5;
+            background: rgba(6, 9, 19, 0.98); border-radius: 24px; z-index: 5;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 30px; opacity: 0; pointer-events: none; transition: all 0.4s ease;
+            padding: 30px; opacity: 0; pointer-events: none; transition: 0.4s;
         }
         .results-modal.active { opacity: 1; pointer-events: auto; }
-        .results-modal h2 { color: #ff0055; font-size: 2.2rem; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255,0,85,0.3); }
-        .results-grid { display: flex; gap: 20px; margin: 20px 0; width: 100%; max-width: 400px; }
-        
-        .error-msg { font-size: 0.8rem; color: #ff0055; text-align: center; font-weight: bold; display: none; margin-top: -5px; line-height: 1.3; }
+        .btn-green { background: #00ffaa; color: #060913; border: none; padding: 14px 28px; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; }
+        .btn-green:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,255,170,0.3); }
     </style>
 </head>
 <body>
 
     <div class="game-container">
-        
+        <a href="https://vilcheslinense4.github.io/Mi-primer-portafolios/index.html" class="btn-volver-global">← Volver a proyectos</a>
+
         <div id="auth-box" class="auth-overlay">
             <h2 id="auth-title">⚡ INICIAR SESIÓN</h2>
-            <p id="auth-desc">Accede para registrar tus marcas en la clasificación global del sistema.</p>
-            
+            <p id="auth-desc" style="opacity: 0.7; font-size: 0.9rem; margin-bottom: 20px;">Identifícate para competir y registrar tu récord en la clasificación.</p>
             <div class="auth-form">
                 <input type="email" id="auth-email" placeholder="Correo electrónico..." style="display: none;">
-                <input type="text" id="auth-username" placeholder="Nombre de usuario o alias...">
+                <input type="text" id="auth-username" placeholder="Nombre de usuario...">
                 <input type="password" id="auth-password" placeholder="Contraseña de acceso...">
-                <div id="auth-error" class="error-msg">Error en las credenciales introducidas.</div>
-                <button id="btn-auth-submit" class="btn-green">Entrar seguro</button>
+                <div id="auth-error" class="error-msg">Error en las credenciales.</div>
+                <button id="btn-auth-submit" class="btn-green">Acceder Seguro</button>
             </div>
-
-            <div id="auth-toggle" class="auth-toggle-text">¿No tienes cuenta todavía? <span>Regístrate aquí</span></div>
+            <div id="auth-toggle" style="margin-top:20px; cursor:pointer; opacity:0.6; font-size:0.85rem;">¿No tienes cuenta? <span style="color:#00d2ff; text-decoration:underline; font-weight:bold;">Regístrate aquí</span></div>
         </div>
 
         <div id="results-box" class="results-modal">
-            <h2>¡TIEMPO AGOTADO!</h2>
-            <p style="opacity: 0.6;">Resumen de rendimiento de tu sesión:</p>
-            <div class="results-grid">
-                <div class="stat-box"><span>Velocidad</span><p id="res-ppm">0 PPM</p></div>
-                <div class="stat-box"><span>Precisión</span><p id="res-prec">0%</p></div>
+            <h2 style="color:#ff0055; font-size:2.3rem; margin-bottom:5px; text-shadow:0 0 15px rgba(255,0,85,0.2);">¡TIEMPO AGOTADO!</h2>
+            <p style="opacity:0.6; margin-bottom:15px;">Estadísticas finales de tu carrera:</p>
+            <div style="display:flex; gap:20px; margin-bottom:25px; width:100%; max-width:360px;">
+                <div class="stat-box" style="flex:1;"><span>Velocidad</span><p id="res-ppm" style="color:#00ffaa;">0 PPM</p></div>
+                <div class="stat-box" style="flex:1;"><span>Precisión</span><p id="res-prec">0%</p></div>
             </div>
-            <p id="record-alert" style="margin-bottom: 20px; color: #00ffaa; font-weight: bold; display: none;">¡NUEVO RÉCORD PERSONAL! 🏆</p>
-            <button id="btn-restart" class="btn-green">Jugar de Nuevo</button>
+            <p id="record-alert" style="color:#00ffaa; font-weight:bold; margin-bottom:20px; display:none;">¡NUEVA MARCA PERSONAL RESISTIDA! 🏆</p>
+            <button id="btn-restart" class="btn-green">Volver a Intentarlo</button>
         </div>
 
         <div class="main-game">
             <header>
                 <span class="logo">⚡ CYBERTYPE</span>
-                <div class="header-actions">
-                    <a href="https://vilcheslinense4.github.io/Mi-primer-portafolios/index.html" class="btn-volver">← Volver</a>
-                    <span id="user-display" class="user-tag" title="Hacer clic para cerrar sesión">Cerrar Sesión</span>
-                </div>
+                <span id="user-display" class="user-tag">Cerrar Sesión</span>
             </header>
 
-            <div class="stats-row">
-                <div class="stat-box">
-                    <span>Tiempo</span>
-                    <p id="timer-display" class="highlight">30s</p>
-                </div>
-                <div class="stat-box">
-                    <span>Velocidad Actual</span>
-                    <p id="ppm-display">0 PPM</p>
-                </div>
-                <div class="stat-box">
-                    <span>Precisión</span>
-                    <p id="precision-display">100%</p>
-                </div>
+            <div class="time-selector">
+                <button class="time-btn active" data-time="30">30 Segundos</button>
+                <button class="time-btn" data-time="60">1 Minuto</button>
             </div>
 
-            <div id="text-target" class="text-challenge">Cargando desafío de tecleo...</div>
+            <div class="stats-row">
+                <div class="stat-box"><span>Tiempo</span><p id="timer-display" class="highlight">30s</p></div>
+                <div class="stat-box"><span>Velocidad</span><p id="ppm-display">0 PPM</p></div>
+                <div class="stat-box"><span>Precisión</span><p id="precision-display">100%</p></div>
+            </div>
+
+            <div id="text-target" class="text-challenge">Cargando diccionario...</div>
 
             <div class="input-area">
-                <textarea id="type-input" placeholder="Escribe aquí el texto de arriba para activar el cronómetro..." disabled></textarea>
+                <textarea id="type-input" placeholder="Comienza a escribir el bloque de palabras para activar el reloj..." disabled></textarea>
             </div>
         </div>
 
         <div class="leaderboard-side">
             <h3>Clasificación 🏆</h3>
-            <div id="leaderboard-entries" class="leaderboard-list"></div>
+            <div id="leaderboard-entries" style="display:flex; flex-direction:column; gap:8px;"></div>
         </div>
-
     </div>
 
     <script>
-        const bancoFrases = [
-            "javascript es el lenguaje que da vida y potencia a las aplicaciones web modernas.",
-            "un buen desarrollador junior practica codigo todos los dias para subir de nivel.",
-            "el almacenamiento local guarda datos directamente en el navegador del usuario.",
-            "crear interfaces interactivas y fluidas mejora la experiencia de los clientes.",
-            "las bases de datos centralizadas guardan informacion global en servidores en la nube.",
-            "diseñar paginas web adaptables garantiza que luzcan increibles en telefonos moviles.",
-            "aprender logs de consola ayuda a solucionar errores de codigo de forma eficiente."
+        const bancoPalabras = [
+            "javascript", "codigo", "frontend", "backend", "servidor", "desarrollo", "web", "interfaz", "diseño", "variable", "funcion", "objeto", "arreglo", "clase", "promesa", "asincrono", "estilo", "cascada", "navegador", "consola", "error", "depuracion", "repositorio", "rama", "fusion", "proyecto", "portafolio", "habilidades", "teclado", "velocidad", "precision", "tecnica", "rendimiento", "usuario", "contraseña", "registro", "sesion", "seguridad", "cifrado", "protocolo", "datos", "almacenamiento", "local", "nube", "conexion", "red", "fibra", "digital", "futuro", "tecnologia", "innovacion", "logica", "algoritmo", "estructura", "semantica", "etiqueta", "elemento", "atributo", "clic", "evento", "tiempo", "segundo", "minuto", "reloj", "record", "clasificacion", "competencia", "exito", "aprendizaje", "practica", "constancia", "junior", "senior", "fullstack", "ingenieria", "software", "hardware", "pantalla", "raton", "movil", "tableta", "portatil", "computadora", "bit", "byte", "archivo", "carpeta", "compilacion", "ejecucion", "entorno", "terminal", "comando", "git", "github"
         ];
 
         function playTone(freq, duration, type="sine") {
@@ -235,18 +219,15 @@
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
-                osc.type = type;
-                osc.frequency.value = freq;
+                osc.type = type; osc.frequency.value = freq;
                 gain.gain.setValueAtTime(0.04, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + duration);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + duration);
             } catch(e){}
         }
 
-        // Elementos DOM Autenticación
+        // Elementos DOM
         const authBox = document.getElementById('auth-box');
         const authTitle = document.getElementById('auth-title');
         const authDesc = document.getElementById('auth-desc');
@@ -256,8 +237,7 @@
         const authError = document.getElementById('auth-error');
         const btnAuthSubmit = document.getElementById('btn-auth-submit');
         const authToggle = document.getElementById('auth-toggle');
-
-        // Elementos DOM Juego
+        
         const userDisplay = document.getElementById('user-display');
         const textTarget = document.getElementById('text-target');
         const typeInput = document.getElementById('type-input');
@@ -271,304 +251,267 @@
         const recordAlert = document.getElementById('record-alert');
         const btnRestart = document.getElementById('btn-restart');
         const leaderboardEntries = document.getElementById('leaderboard-entries');
+        const timeBtns = document.querySelectorAll('.time-btn');
 
-        // Variables de Control
-        let isLoginMode = true; 
+        // Estado del juego
+        let isLoginMode = true;
         let currentUser = "";
-        let tiempoRestante = 30;
+        let gameTime = 30;
+        let timeLeft = 30;
         let timerInterval = null;
-        let juegoIniciado = false;
-        let fraseActual = "";
+        let isPlaying = false;
+        let fraseCompleta = "";
         let erroresTotales = 0;
         let pulsacionesTotales = 0;
 
-        function getDBUsuarios() {
-            return JSON.parse(localStorage.getItem('cybertype_db_users')) || {};
-        }
+        function getDB() { return JSON.parse(localStorage.getItem('cybertype_db_users')) || {}; }
+        function saveDB(db) { localStorage.setItem('cybertype_db_users', JSON.stringify(db)); }
 
-        function saveDBUsuarios(db) {
-            localStorage.setItem('cybertype_db_users', JSON.stringify(db));
-        }
-
+        // Eventos Login / Registro
         authToggle.addEventListener('click', () => {
-            playTone(500, 0.05);
+            isLoginMode = !isLoginMode;
             authError.style.display = "none";
-            if (isLoginMode) {
-                authTitle.innerText = "⚡ REGISTRAR CUENTA";
-                authDesc.innerText = "Completa tus datos para crear una identidad de corredor digital única.";
-                authEmail.style.display = "block";
-                btnAuthSubmit.innerText = "Crear Cuenta Pro";
-                authToggle.innerHTML = "¿Ya tienes cuenta registrada? <span>Inicia sesión aquí</span>";
-                isLoginMode = false;
-            } else {
-                authTitle.innerText = "⚡ INICIAR SESIÓN";
-                authDesc.innerText = "Accede para registrar tus marcas en la clasificación global del sistema.";
-                authEmail.style.display = "none";
-                btnAuthSubmit.innerText = "Entrar seguro";
-                authToggle.innerHTML = "¿No tienes cuenta todavía? <span>Regístrate aquí</span>";
-                isLoginMode = true;
-            }
+            authTitle.innerText = isLoginMode ? "⚡ INICIAR SESIÓN" : "⚡ REGISTRAR CUENTA";
+            authDesc.innerText = isLoginMode ? "Identifícate para competir y registrar tu récord en la clasificación." : "Crea un perfil único con requisitos de seguridad avanzados.";
+            authEmail.style.display = isLoginMode ? "none" : "block";
+            btnAuthSubmit.innerText = isLoginMode ? "Acceder Seguro" : "Crear Cuenta Pro";
+            authToggle.innerHTML = isLoginMode ? "¿No tienes cuenta? <span style='color:#00d2ff; text-decoration:underline; font-weight:bold;'>Regístrate aquí</span>" : "¿Ya tienes cuenta? <span style='color:#00d2ff; text-decoration:underline; font-weight:bold;'>Inicia sesión aquí</span>";
+            playTone(500, 0.05);
         });
 
         btnAuthSubmit.addEventListener('click', () => {
-            const username = authUsername.value.trim();
-            const password = authPassword.value;
+            const user = authUsername.value.trim();
+            const pass = authPassword.value;
             const email = authEmail.value.trim();
-            const db = getDBUsuarios();
-
+            const db = getDB();
             authError.style.display = "none";
 
             if (isLoginMode) {
-                if (db[username] && db[username].password === password) {
-                    executeLogin(username);
-                } else {
-                    triggerAuthError("Credenciales incorrectas o usuario inexistente.");
-                }
+                if (db[user] && db[user].password === pass) { login(user); }
+                else { triggerError("Usuario o contraseña incorrectos."); }
             } else {
-                if (email.length < 5 || !email.includes("@")) {
-                    triggerAuthError("Escribe un correo electrónico válido.");
-                    return;
-                }
-                if (username.length < 2) {
-                    triggerAuthError("El nombre de usuario debe tener mínimo 2 letras.");
-                    return;
-                }
-                if (db[username]) {
-                    triggerAuthError("Este nombre de usuario ya está registrado.");
-                    return;
-                }
+                if (!email.includes("@") || email.length < 5) { triggerError("Escribe un email válido."); return; }
+                if (user.length < 2) { triggerError("El nombre de usuario es demasiado corto."); return; }
+                if (db[user]) { triggerError("Ese nombre de usuario ya está registrado."); return; }
                 
-                // REQUISITOS ESTRICTOS: Mínimo 9 caracteres, 1 mayúscula, 1 minúscula y 1 número
-                const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,}$/;
-                if (!regexPassword.test(password)) {
-                    triggerAuthError("Contraseña inválida. Debe tener mínimo 9 caracteres, 1 mayúscula, 1 minúscula y 1 número.");
+                // Mínimo 9 caracteres, 1 mayúscula, 1 minúscula, 1 número
+                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,}$/;
+                if (!regex.test(pass)) {
+                    triggerError("Contraseña inválida. Requisitos: mínimo 9 caracteres, 1 mayúscula, 1 minúscula y 1 número.");
                     return;
                 }
-
-                db[username] = { email: email, password: password, record: 0 };
-                saveDBUsuarios(db);
-
-                executeLogin(username);
+                db[user] = { email: email, password: pass, record: 0 };
+                saveDB(db); login(user);
             }
         });
 
-        function triggerAuthError(texto) {
-            playTone(250, 0.2, "sawtooth");
-            authError.innerText = texto;
-            authError.style.display = "block";
-        }
-
-        function executeLogin(username) {
-            currentUser = username;
-            localStorage.setItem('cybertype_session_active', currentUser);
-            userDisplay.innerText = `👤 ${currentUser} (Salir)`;
+        function triggerError(t) { authError.innerText = t; authError.style.display = "block"; playTone(220, 0.2, "sawtooth"); }
+        
+        function login(u) {
+            currentUser = u;
+            localStorage.setItem('cybertype_session_active', u);
+            userDisplay.innerText = `👤 ${u} (Salir)`;
             authBox.classList.add('hidden');
-            
-            playTone(600, 0.08, "square");
-            setTimeout(() => playTone(800, 0.1, "square"), 60);
-
-            authUsername.value = "";
-            authPassword.value = "";
-            authEmail.value = "";
-
-            initPartida();
+            playTone(600, 0.08);
+            initGame();
         }
 
         userDisplay.addEventListener('click', () => {
             clearInterval(timerInterval);
             localStorage.removeItem('cybertype_session_active');
-            currentUser = "";
-            userDisplay.innerText = "Cerrar Sesión";
-            authBox.classList.remove('hidden');
-            typeInput.disabled = true;
-            resultsBox.classList.remove('active');
-            playTone(350, 0.15, "sawtooth");
+            location.reload();
         });
 
-        function actualizarLeaderboard() {
-            const db = getDBUsuarios();
-            let userRecord = 0;
-            if (currentUser && db[currentUser]) {
-                userRecord = db[currentUser].record || 0;
+        // Manejo de la selección del tiempo de juego
+        timeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (isPlaying) return;
+                timeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                gameTime = parseInt(btn.dataset.time);
+                timeLeft = gameTime;
+                timerDisplay.innerText = `${timeLeft}s`;
+            });
+        });
+
+        // Generar un bloque grande de palabras (Estilo MonkeyType infinito)
+        function generateInfiniteWords() {
+            let totalPalabras = [];
+            for (let i = 0; i < 80; i++) {
+                totalPalabras.push(bancoPalabras[Math.floor(Math.random() * bancoPalabras.length)]);
             }
-
-            let listaRanks = [
-                { nombre: "💻 Neo_JS", ppm: 92 },
-                { nombre: "⚡ Cyber_Typist", ppm: 74 },
-                { nombre: "🤖 Bot_Junior", ppm: 45 }
-            ];
-
-            if (currentUser) {
-                listaRanks.push({ nombre: `👤 ${currentUser}`, ppm: userRecord });
-            }
-
-            listaRanks.sort((a, b) => b.ppm - a.ppm);
-
-            leaderboardEntries.innerHTML = "";
-            listaRanks.forEach((item, index) => {
-                const row = document.createElement('div');
-                row.className = `leader-item ${index === 0 ? 'top-rank' : ''} ${item.nombre.includes(currentUser) ? 'user-rank' : ''}`;
-                row.innerHTML = `
-                    <span class="leader-name">${index + 1}. ${item.nombre}</span>
-                    <span class="leader-score">${item.ppm} PPM</span>
-                `;
-                leaderboardEntries.appendChild(row);
+            fraseCompleta = totalPalabras.join(" ");
+            
+            textTarget.innerHTML = "";
+            fraseCompleta.split("").forEach((char, index) => {
+                const span = document.createElement('span');
+                span.innerText = char;
+                if (index === 0) span.className = "char-current";
+                textTarget.appendChild(span);
             });
         }
 
-        function initPartida() {
+        function initGame() {
             clearInterval(timerInterval);
-            juegoIniciado = false;
-            tiempoRestante = 30;
+            isPlaying = false;
+            timeLeft = gameTime;
             erroresTotales = 0;
             pulsacionesTotales = 0;
             
-            timerDisplay.innerText = "30s";
+            timerDisplay.innerText = `${timeLeft}s`;
             ppmDisplay.innerText = "0 PPM";
             precisionDisplay.innerText = "100%";
             typeInput.value = "";
             typeInput.disabled = false;
             resultsBox.classList.remove('active');
             recordAlert.style.display = "none";
-
-            fraseActual = bancoFrases[Math.floor(Math.random() * bancoFrases.length)];
             
-            textTarget.innerHTML = "";
-            fraseActual.split("").forEach((char, index) => {
-                const span = document.createElement('span');
-                span.innerText = char;
-                if (index === 0) span.className = "char-current";
-                textTarget.appendChild(span);
-            });
-
-            actualizarLeaderboard();
+            generateInfiniteWords();
+            updateLeaderboard();
             typeInput.focus();
         }
 
-        typeInput.addEventListener('input', (e) => {
-            if (!juegoIniciado) {
-                juegoIniciado = true;
-                startCronometro();
+        // Lógica de validación letra a letra interactiva
+        typeInput.addEventListener('input', () => {
+            if (!isPlaying) {
+                isPlaying = true;
+                startTimer();
             }
 
-            const textoEscrito = typeInput.value;
+            const escrito = typeInput.value;
             const spans = textTarget.querySelectorAll('span');
             pulsacionesTotales++;
 
+            // Generar más palabras automáticamente si el usuario va por la mitad del bloque
+            if (escrito.length > spans.length - 40) {
+                let extras = [];
+                for (let i = 0; i < 40; i++) { extras.push(bancoPalabras[Math.floor(Math.random() * bancoPalabras.length)]); }
+                let masTexto = " " + extras.join(" ");
+                fraseCompleta += masTexto;
+                
+                masTexto.split("").forEach(char => {
+                    const span = document.createElement('span');
+                    span.innerText = char;
+                    textTarget.appendChild(span);
+                });
+            }
+
+            // Validar caracteres
+            let correctos = 0;
             erroresTotales = 0;
-            let caracteresCorrectos = 0;
+            const nuevosSpans = textTarget.querySelectorAll('span');
 
-            spans.forEach((span, index) => {
-                const charEscrito = textoEscrito[index];
-
+            nuevosSpans.forEach((span, index) => {
+                const charEscrito = escrito[index];
                 if (charEscrito == null) {
-                    span.className = (index === textoEscrito.length) ? "char-current" : "";
+                    span.className = index === escrito.length ? "char-current" : "";
                 } else if (charEscrito === span.innerText) {
                     span.className = "char-correct";
-                    caracteresCorrectos++;
+                    correctos++;
                 } else {
                     span.className = "char-incorrect";
                     erroresTotales++;
                 }
             });
 
-            if (textoEscrito.length > 0) {
-                if (textoEscrito[textoEscrito.length - 1] === fraseActual[textoEscrito.length - 1]) {
-                    playTone(800, 0.03); 
+            // Feedback acústico de tecleo rápido
+            if (escrito.length > 0) {
+                if (escrito[escrito.length - 1] === nuevosSpans[escrito.length - 1].innerText) {
+                    playTone(850, 0.02);
                 } else {
-                    playTone(300, 0.06, "triangle"); 
+                    playTone(280, 0.05, "triangle");
                 }
             }
 
-            let minutosTranscurridos = (30 - tiempoRestante) / 60;
-            if (minutosTranscurridos > 0) {
-                let ppm = Math.round((caracteresCorrectos / 5) / minutesTranscurridos);
-                ppmDisplay.innerText = `${ppm} PPM`;
+            // Cálculo dinámico de PPM en tiempo real
+            let minutosEfectivos = (gameTime - timeLeft) / 60;
+            if (minutosEfectivos > 0) {
+                let ppmActual = Math.round((correctos / 5) / minutosEfectivos);
+                ppmDisplay.innerText = `${ppmActual} PPM`;
             }
 
-            let precision = Math.round(((pulsacionesTotales - erroresTotales) / pulsacionesTotales) * 100);
-            precisionDisplay.innerText = `${isNaN(precision) ? 100 : Math.max(0, precision)}%`;
-
-            if (textoEscrito === fraseActual) {
-                finalizarJuego();
-            }
+            // Cálculo dinámico de precisión
+            let prec = Math.round(((pulsacionesTotales - erroresTotales) / pulsacionesTotales) * 100);
+            precisionDisplay.innerText = `${Math.max(0, prec)}%`;
         });
 
-        function startCronometro() {
+        function startTimer() {
             timerInterval = setInterval(() => {
-                tiempoRestante--;
-                timerDisplay.innerText = `${tiempoRestante}s`;
+                timeLeft--;
+                timerDisplay.innerText = `${timeLeft}s`;
 
-                if (tiempoRestante <= 5 && tiempoRestante > 0) {
-                    playTone(1000, 0.05, "square");
-                }
+                // Sonido de alerta en los últimos 5 segundos
+                if (timeLeft <= 5 && timeLeft > 0) { playTone(950, 0.04, "square"); }
 
-                const textoEscrito = typeInput.value;
-                let caracteresCorrectos = 0;
-                for(let i=0; i<textoEscrito.length; i++) {
-                    if (textoEscrito[i] === fraseActual[i]) caracteresCorrectos++;
-                }
-                let minutosTranscurridos = (30 - tiempoRestante) / 60;
-                let ppm = Math.round((caracteresCorrectos / 5) / minutosTranscurridos);
-                ppmDisplay.innerText = `${isNaN(ppm) ? 0 : ppm} PPM`;
-
-                if (tiempoRestante <= 0) {
-                    finalizarJuego();
-                }
+                if (timeLeft <= 0) { endGame(); }
             }, 1000);
         }
 
-        function finalizarJuego() {
+        function endGame() {
             clearInterval(timerInterval);
             typeInput.disabled = true;
 
-            const textoEscrito = typeInput.value;
-            let caracteresCorrectos = 0;
-            for(let i=0; i<textoEscrito.length; i++) {
-                if (textoEscrito[i] === fraseActual[i]) caracteresCorrectos++;
+            const escrito = typeInput.value;
+            const spans = textTarget.querySelectorAll('span');
+            let correctosFinal = 0;
+
+            for (let i = 0; i < escrito.length; i++) {
+                if (escrito[i] === spans[i].innerText) correctosFinal++;
             }
-            
-            let minutosEfectivos = (30 - tiempoRestante) / 60;
-            if (minutosEfectivos === 0) minutosEfectivos = 30 / 60; 
-            
-            let ppmFinal = Math.round((caracteresCorrectos / 5) / minutosEfectivos);
+
+            let ppmFinal = Math.round((correctosFinal / 5) / (gameTime / 60));
             let precisionFinal = Math.round(((pulsacionesTotales - erroresTotales) / pulsacionesTotales) * 100);
             if (isNaN(precisionFinal)) precisionFinal = 100;
 
             resPpm.innerText = `${ppmFinal} PPM`;
             resPrec.innerText = `${Math.max(0, precisionFinal)}%`;
 
-            const db = getDBUsuarios();
-            let recordAnterior = db[currentUser].record || 0;
-            
-            if (ppmFinal > recordAnterior) {
+            // Procesar y almacenar récord en LocalStorage
+            const db = getDB();
+            let recordViejo = db[currentUser]?.record || 0;
+
+            if (ppmFinal > recordViejo) {
                 db[currentUser].record = ppmFinal;
-                saveDBUsuarios(db);
-                
+                saveDB(db);
                 recordAlert.style.display = "block";
                 playTone(700, 0.1);
-                setTimeout(() => playTone(900, 0.1), 100);
-                setTimeout(() => playTone(1200, 0.2), 200);
+                setTimeout(() => playTone(1000, 0.15), 80);
             } else {
-                playTone(400, 0.3, "sawtooth");
+                playTone(380, 0.25, "sawtooth");
             }
 
-            actualizarLeaderboard();
+            updateLeaderboard();
             resultsBox.classList.add('active');
         }
 
-        btnRestart.addEventListener('click', () => {
-            playTone(600, 0.08);
-            initPartida();
-        });
-
-        window.addEventListener('load', () => {
-            const activeSession = localStorage.getItem('cybertype_session_active');
-            if (activeSession) {
-                executeLogin(activeSession);
-            } else {
-                actualizarLeaderboard();
+        function updateLeaderboard() {
+            const db = getDB();
+            let ranks = [
+                { nombre: "💻 Neo_JS", ppm: 95 },
+                { nombre: "⚡ Cyber_Typist", ppm: 78 },
+                { nombre: "🤖 Bot_Junior", ppm: 42 }
+            ];
+            if (currentUser && db[currentUser]) {
+                ranks.push({ nombre: `👤 ${currentUser}`, ppm: db[currentUser].record || 0 });
             }
+            ranks.sort((a, b) => b.ppm - a.ppm);
+
+            leaderboardEntries.innerHTML = "";
+            ranks.forEach((p, index) => {
+                const row = document.createElement('div');
+                row.className = `leader-item ${p.nombre.includes(currentUser) ? 'user-rank' : ''}`;
+                row.innerHTML = `<span>${index + 1}. ${p.nombre}</span><span>${p.ppm} PPM</span>`;
+                leaderboardEntries.appendChild(row);
+            });
+        }
+
+        btnRestart.addEventListener('click', initGame);
+
+        // Comprobación de sesión al arrancar
+        window.addEventListener('load', () => {
+            const sesionActiva = localStorage.getItem('cybertype_session_active');
+            if (sesionActiva) { login(sesionActiva); }
+            else { updateLeaderboard(); }
         });
     </script>
 </body>
